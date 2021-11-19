@@ -1,0 +1,81 @@
+#!/bin/sh
+
+# ===================================================
+# Copyright (c) [2020-2021] [Tencent]
+# [OpenCloudOS Tools] is licensed under Mulan PSL v2.
+# You can use this software according to the terms and conditions of the Mulan PSL v2. 
+# You may obtain a copy of Mulan PSL v2 at:
+#            http://license.coscl.org.cn/MulanPSL2 
+# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.  
+# See the Mulan PSL v2 for more details.  
+# ===================================================
+
+#
+# Tos command
+# g_CAPD_SRDC_OS@tencent.com
+#
+. /usr/lib/opencloudos-tools/tos-lib.sh
+scriptversion=2.2;
+scriptdate=2020-11-18;
+
+usage="\
+tos version $scriptversion
+Usage:
+	tos OpenCloudOS System Management Toolset
+	tos -u|-U| update [rpm_name]	Update the system 
+	tos -i|-I| install rpm_name	install rpms
+	tos -s|-S| show			Show the system version
+	tos -c|-C| check [rpm_name]	Check the modified rpms
+	tos -f yum | fix yum		Fix yum problems
+	tos -f dns | fix dns		Fix DNS problems
+	tos -a|-A | analyze		Analyze the system performance 
+	tos set dns			Set DNS
+	tos set irq			Set irqaffinity, restart irqaffinity service
+	tos -cu| check-update		Check available package updates
+	tos -b|-B| backup [ reboot ]	Backup the system online, or reboot to backup 
+	tos -r|-R| recover|reinstall	Recover or Reinstall the system
+	tos -h|-H| help			Show this usage
+	tos -v|-V| version		Show the script version
+
+"
+
+if [ $# -eq 0 ]; then
+    echo "$usage"
+    tos_show;
+fi
+
+while test $# -ne 0; do
+    case $1 in
+        -u | -U | update) shift
+                          tos_update $@
+                          break;;
+        -i | -I | install) shift
+                          tos_install $@
+                          break;;
+        -s | -S | show)  tos_show;;
+        -a | -A | analyze) tos_analyze $2
+		          break;;
+        -b | -B | backup) tos_backup $2
+                          break;;
+        -r | -R | recover | reinstall) shift 
+		          tos_recover $@
+                          break;;
+        -c | -C | check) tos_check $2
+                         shift;;
+        -cu | check-update) tos_check_update;;
+        -f | fix) tos_fix $2
+	          shift;;
+	set)  tos_set $2
+	      shift;;
+        -h | -H | help) echo "$usage"; exit $?;;
+        -v | -V | version) echo "$scriptversion";;
+        --) shift
+            break;;
+        *) echo "$0: invalid option: $1" >&2
+            echo "$usage"
+            exit 1;;
+     esac
+     shift
+done
+
+
