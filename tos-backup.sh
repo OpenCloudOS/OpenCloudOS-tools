@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ===================================================
-# Copyright (c) [2021] [Tencent]
+# Copyright (c) [2022] [Tencent]
 # [OpenCloudOS Tools] is licensed under Mulan PSL v2.
 # You can use this software according to the terms and conditions of the Mulan PSL v2. 
 # You may obtain a copy of Mulan PSL v2 at:
@@ -78,7 +78,7 @@ tos_backup()
     fi
 
     bindingdir=`new_dir /tmp/bind`
-    backupdir="/data/tlinux/backup"
+    backupdir="/data/opencloudos/backup"
     bindingdir="${bindingdir#/}"
     backupdir="${backupdir#/}"
     
@@ -101,10 +101,9 @@ tos_backup()
     done
 
     rebuildtree $bindingdir
-    #VER=$(awk '/Tencent/{print $4}' /etc/tlinux-release)
-    VER=$(awk '/Tencent/{print $(NF-1)}' /etc/tlinux-release)
+    VER=$(awk '/OpenCloudOS/{print $(NF)}' /etc/opencloudos-release)
     mkdir -p "/$backupdir"
-    sqfs=tlinux-64bit-v${VER}-backup.`date +"%Y-%m-%d-%H:%M"`.sqfs
+    sqfs=opencloudos-64bit-v${VER}-backup.`date +"%Y-%m-%d-%H:%M"`.sqfs
     mksquashfs /$bindingdir "/$backupdir/${sqfs}" -comp xz -b 262144 -ef $exclude
     destroytree $bindingdir
     rm $exclude

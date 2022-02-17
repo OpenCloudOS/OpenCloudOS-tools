@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ===================================================
-# Copyright (c) [2021] [Tencent]
+# Copyright (c) [2022] [Tencent]
 # [OpenCloudOS Tools] is licensed under Mulan PSL v2.
 # You can use this software according to the terms and conditions of the Mulan PSL v2. 
 # You may obtain a copy of Mulan PSL v2 at:
