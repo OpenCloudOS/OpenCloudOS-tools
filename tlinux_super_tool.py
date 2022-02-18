@@ -167,17 +167,12 @@ def grub_add_entry(option, img, format_data, passwd, vm):
         pw_value = passwd
     else:
         pw_value = 0
-    if is_tlinux1():
-        grub_conf = '/boot/grub/grub.conf'
-        if os.path.exists("/sys/firmware/efi") and os.path.isfile("/boot/efi/EFI/tencent/grub.efi") :
-            grub_conf = '/boot/efi/EFI/tencent/grub.conf'
-    else:
-        grub_conf = '/boot/grub2/grub.cfg'
-        #if os.path.exists("/sys/firmware/efi") and os.path.isfile("/boot/efi/EFI/centos/grubenv") :
-        #    os.remove("/boot/grub2/grubenv")
-        #    shutil.copy("/boot/efi/EFI/centos/grubenv", "/boot/grub2/grubenv") 
+    grub_conf = '/boot/grub2/grub.cfg'
+    #if os.path.exists("/sys/firmware/efi") and os.path.isfile("/boot/efi/EFI/centos/grubenv") :
+    #    os.remove("/boot/grub2/grubenv")
+    #    shutil.copy("/boot/efi/EFI/centos/grubenv", "/boot/grub2/grubenv") 
     if vm:
-        console = "tty0,115200"
+        console = "tty0 console=ttyS0,115200"
     else:
         console = "tty0"
     img_name = ''
