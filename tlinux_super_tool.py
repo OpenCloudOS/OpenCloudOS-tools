@@ -94,6 +94,7 @@ def is_vm():
         f = open("/proc/cmdline")
         for line in f:
             if "xvda" in line:
+                f.close()
                 return True
         f.close()
     
