@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deviceinfo version="0.2">
+  <device>
+
+    <!--
+	 Note: This fdi-file contains several deprecated keys, which get removed 12 months
+               after they get marked as deprecated in the HAL spec.
+               For backward compability of some unported tools this file can contain for a
+	       short time some already finally removed keys.
+     -->
+
+    <!-- temporary readded keys -->
+      <!-- *.physical_device - finally removed: 2008-03-03 -->
+      <!-- readd net.physical_device to prevent problems with NM -->
+      <match key="net.originating_device" exists="true">
+        <merge key="net.physical_device" type="copy_property">net.originating_device</merge>
+      </match>
+
+      <!-- info.bus - finally removed: 2008-03-03 -->
+      <!-- readd info.bus for usb/usb_device to prevent problems with (lib)gphoto2 and libmtp -->
+      <match key="info.subsystem" contains="usb">
+        <merge key="info.bus" type="copy_property">info.subsystem</merge>
+      </match>
+
+    <!-- keys which are deprecated, but not removed finally -->
+      <!-- power_management.can_suspend_to_ram - planed remove: 2007-05-01 -->
+      <match key="power_management.can_suspend" exists="true">
+	<merge key="power_management.can_suspend_to_ram" type="copy_property">power_management.can_suspend</merge>
+      </match>
+      <!-- power_management.can_suspend_to_disk - planed remove: 2007-05-01 -->
+      <match key="power_management.can_hibernate" exists="true">
+	<merge key="power_management.can_suspend_to_disk" type="copy_property">power_management.can_hibernate</merge>
+      </match>
+
+  </device>
+</deviceinfo>

@@ -1,0 +1,21 @@
+# Some aliases for IDE controllers.
+a ide0 hda
+a ide0 hdb
+a ide1 hdc
+a ide1 hdd
+a ide2 hde
+a ide2 hdf
+a ide3 hdg
+a ide3 hdh
+a ide4 hdi
+a ide4 hdj
+a ide5 hdk
+a ide5 hdl
+a ide6 hdm
+a ide6 hdn
+a ide7 hdo
+a ide7 hdp
+a ide8 hdq
+a ide8 hdr
+a ide9 hds
+a ide9 hdt

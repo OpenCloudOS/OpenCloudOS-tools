@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deviceinfo version="0.2">
+
+  <device>
+    <match key="info.capabilities" contains="leds">
+      <match key="leds.device_name" exists="true">
+        <match key="leds.function" exists="true">
+          <append key="info.addons.singleton" type="strlist">hald-addon-leds</append>
+        </match>
+      </match>
+    </match>
+  </device>
+
+</deviceinfo>

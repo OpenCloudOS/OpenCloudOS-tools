@@ -1,0 +1,4 @@
+[D-BUS Service]
+Name=org.freedesktop.ConsoleKit
+Exec=/usr/sbin/console-kit-daemon --no-daemon
+User=root

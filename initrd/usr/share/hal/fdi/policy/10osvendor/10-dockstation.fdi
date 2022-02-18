@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deviceinfo version="0.2">
+ <device>
+  <match key="info.udi" contains="/org/freedesktop/Hal/devices/platform_dock_">
+   <append key="info.interfaces" type="strlist">org.freedesktop.Hal.Device.DockStation</append>
+      <append key="org.freedesktop.Hal.Device.DockStation.method_names" type="strlist">Undock</append>
+      <append key="org.freedesktop.Hal.Device.DockStation.method_signatures" type="strlist"></append>
+      <append key="org.freedesktop.Hal.Device.DockStation.method_argnames" type="strlist"></append>
+      <append key="org.freedesktop.Hal.Device.DockStation.method_execpaths" type="strlist">hal-dockstation-undock</append>
+    </match>
+  </device>
+</deviceinfo>

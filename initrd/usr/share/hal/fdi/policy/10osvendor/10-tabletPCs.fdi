@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deviceinfo version="0.2">
+
+  <device>
+    <!-- to get the device up we need to set the baud_rate correct -->
+    <match key="pnp.id" contains="FPI2004">
+      <merge key="input.device.set" type="string">/dev/ttyS0</merge>
+      <merge key="pnp.serial.baud_base" type="int">38400</merge>
+    </match>
+
+    <!-- add addon if need special ttySx settings -->
+    <match key="input.device.set" exists="true">
+      <append key="info.callouts.add" type="strlist">hal-system-setserial</append>	
+    </match>
+
+    <!-- handle USB tablets -->
+    <match key="usb_device.vendor_id" int="0x56a">
+      <!-- WACOM Tablets -->
+      <match key="usb_device.product_id" int_outof="0x90;0x93;0x9a">
+	<!-- TabletPCs with USB Wacom Tablets -->
+        <match key="/org/freedesktop/Hal/devices/computer:system.formfactor" compare_ne="laptop">
+	  <!-- set the correct formfactor if not already laptop -->
+	  <merge key="/org/freedesktop/Hal/devices/computer:system.formfactor" type="string">laptop</merge>
+	</match>
+	<!-- set the correct subtype -->
+	<merge key="/org/freedesktop/Hal/devices/computer:system.formfactor.subtype" type="string">tabletpc</merge>
+      </match>
+    </match>
+
+  </device>
+
+</deviceinfo>

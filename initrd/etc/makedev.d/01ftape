@@ -1,0 +1,15 @@
+# Aliases for devices used by the ftape driver.
+a ftape qft
+a ftape nqft
+a ftape rft
+a ftape nrft
+a ftape zqft
+a ftape nzqft
+a ftape rawqft
+a ftape nrawqft
+a ftape tape-d
+a ftape tape-reset
+a ftape tpqic
+a ftape ntpqic
+a ftape st
+a ftape nst

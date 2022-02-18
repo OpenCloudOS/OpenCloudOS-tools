@@ -1,0 +1,56 @@
+#!/bin/bash
+
+# Copyright (C) 2005 W. Michael Petullo <mike@flyn.org>
+# Copyright (C) 2006 David Zeuthen <davidz@redhat.com>
+# 
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2.
+
+. hal-functions
+
+locked_out() {
+	echo "org.freedesktop.Hal.Device.InterfaceLocked" >&2
+	echo "Enclosing drive/volume is locked" >&2
+	exit 1
+}
+
+unknown_error() {
+        echo "org.freedesktop.Hal.Device.UnknownError" >&2
+        echo "Missing or empty environment variable(s)." >&2
+        echo "This script should be started by hald." >&2
+        exit 1
+}
+
+if [ -z "$HAL_PROP_BLOCK_DEVICE" ] || [ -z "$HAL_PROP_INFO_UDI" ] || [ -z "$HAL_PROP_VOLUME_UUID" ] ; then
+    unknown_error
+fi
+
+# Respect the same locks as Mount()/Unmount() etc.
+if [ -n "$HAL_METHOD_INVOKED_BY_SYSTEMBUS_CONNECTION_NAME" ] ; then
+    hal-is-caller-locked-out --udi $HAL_PROP_INFO_UDI \
+        --interface org.freedesktop.Hal.Device.Volume \
+        --caller "$HAL_METHOD_INVOKED_BY_SYSTEMBUS_CONNECTION_NAME"
+    RET=$?
+    if [ "$RET" != "0" ] ; then
+        locked_out
+    fi
+    hal-is-caller-locked-out --udi $HAL_PROP_BLOCK_STORAGE_DEVICE \
+        --interface org.freedesktop.Hal.Device.Storage \
+        --caller "$HAL_METHOD_INVOKED_BY_SYSTEMBUS_CONNECTION_NAME"
+    RET=$?
+    if [ "$RET" != "0" ] ; then
+        locked_out
+    fi
+fi
+
+IS_HOTPLUGGABLE=`hal-get-property --udi $HAL_PROP_BLOCK_STORAGE_DEVICE --key storage.hotpluggable`
+if [ "$IS_HOTPLUGGABLE" == "true" ] ; then
+    ACTION="org.freedesktop.hal.storage.crypto-setup-removable"
+elif [ "$IS_HOTPLUGGABLE" == "false" ] ; then
+    ACTION="org.freedesktop.hal.storage.crypto-setup-fixed"
+else
+    unknown_error
+fi
+
+hal_check_priv $ACTION
+hal_exec_backend

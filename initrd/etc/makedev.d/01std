@@ -1,0 +1,28 @@
+# This is the "bare minimum" list of devices.
+a standard std
+a std mem
+# Removed, per https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=117692.
+# a std kmem
+a std null
+a std port
+a std zero
+a std full
+a std random
+a std urandom
+a std fd
+a std stdin
+a std stdout
+a std stderr
+a std core
+
+l fd ../proc/self/fd
+l stdin ../proc/self/fd/0
+l stdout ../proc/self/fd/1
+l stderr ../proc/self/fd/2
+l nfsd socksys
+l X0R null
+
+l ramdisk ram0
+l ftape qft0
+l bttv0 video0
+l radio radio0

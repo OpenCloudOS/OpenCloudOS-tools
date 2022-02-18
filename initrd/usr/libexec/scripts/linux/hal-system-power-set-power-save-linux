@@ -1,0 +1,27 @@
+#!/bin/sh
+
+value=$1
+
+unsupported() {
+	echo org.freedesktop.Hal.Device.SystemPowerManagement.NotSupported >&2
+	echo No powersave method found >&2
+	exit 1
+}
+
+# We only support pm-utils
+if [ -x "/usr/sbin/pm-powersave" ] ; then
+	if [ $value = "true" ]; then
+		/usr/sbin/pm-powersave true
+		RET=$?
+	elif [ $value = "false" ]; then
+		/usr/sbin/pm-powersave false
+		RET=$?
+	fi
+
+else
+	# cannot set proc stuff here, so error out
+	unsupported
+	fi 
+
+exit $RET
+

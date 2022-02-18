@@ -1,0 +1,44 @@
+#!/bin/sh
+
+unsupported() {
+	echo org.freedesktop.Hal.Device.SystemPowerManagement.NotSupported >&2
+	echo No hibernate script found >&2
+	exit 1
+}
+
+# Make a suitable command line argument so that the tools can do the correct
+# quirks for video resume.
+# Passing the quirks to the tool allows the tool to not depend on HAL for data.
+QUIRKS=""
+[ "$HAL_PROP_POWER_MANAGEMENT_QUIRK_S3_BIOS" = "true" ] && QUIRKS="$QUIRKS --quirk-s3-bios"
+[ "$HAL_PROP_POWER_MANAGEMENT_QUIRK_S3_MODE" = "true" ] && QUIRKS="$QUIRKS --quirk-s3-mode"
+[ "$HAL_PROP_POWER_MANAGEMENT_QUIRK_DPMS_SUSPEND" = "true" ] && QUIRKS="$QUIRKS --quirk-dpms-suspend"
+[ "$HAL_PROP_POWER_MANAGEMENT_QUIRK_DPMS_ON" = "true" ] && QUIRKS="$QUIRKS --quirk-dpms-on"
+[ "$HAL_PROP_POWER_MANAGEMENT_QUIRK_VBESTATE_RESTORE" = "true" ] && QUIRKS="$QUIRKS --quirk-vbestate-restore"
+[ "$HAL_PROP_POWER_MANAGEMENT_QUIRK_VBEMODE_RESTORE" = "true" ] && QUIRKS="$QUIRKS --quirk-vbemode-restore"
+[ "$HAL_PROP_POWER_MANAGEMENT_QUIRK_VGA_MODE_3" = "true" ] && QUIRKS="$QUIRKS --quirk-vga-mode3"
+[ "$HAL_PROP_POWER_MANAGEMENT_QUIRK_VBE_POST" = "true" ] && QUIRKS="$QUIRKS --quirk-vbe-post"
+[ "$HAL_PROP_POWER_MANAGEMENT_QUIRK_RADEON_OFF" = "true" ] && QUIRKS="$QUIRKS --quirk-radeon-off"
+[ "$HAL_PROP_POWER_MANAGEMENT_QUIRK_RESET_BRIGHTNESS" = "true" ] && QUIRKS="$QUIRKS --quirk-reset-brightness"
+[ "$HAL_PROP_POWER_MANAGEMENT_QUIRK_NONE" = "true" ] && QUIRKS="$QUIRKS --quirk-none"
+
+# We only support pm-utils
+if [ -x /usr/sbin/pm-hibernate ] ; then
+	/usr/sbin/pm-hibernate $QUIRKS
+	RET=$?
+else
+	unsupported
+fi
+
+#Refresh devices as a resume can do funny things
+for type in button battery ac_adapter
+do
+	devices=`hal-find-by-capability --capability $type`
+	for device in $devices
+	do
+		dbus-send --system --print-reply --dest=org.freedesktop.Hal \
+			  $device org.freedesktop.Hal.Device.Rescan
+	done
+done
+
+exit $RET

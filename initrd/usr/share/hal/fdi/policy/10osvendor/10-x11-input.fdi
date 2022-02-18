@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<deviceinfo version="0.2">
+  <device>
+
+    <!-- This KVMS has abs x/y and buttons. It only has inputInfo.joystick
+         set by hal and doesn't get picked up by default -->
+    <match key="input.product" contains="American Megatrends Inc. Virtual Keyboard and Mouse">
+       <merge key="input.x11_driver" type="string">evdev</merge>
+    </match>
+
+    <!-- KVM emulates a USB graphics tablet which works in absolute coordinate mode -->
+    <match key="input.product" contains="QEMU USB Tablet">
+       <merge key="input.x11_driver" type="string">evdev</merge>
+    </match>
+
+    <!-- FIXME: Support tablets too. -->
+    <match key="info.capabilities" contains="input.mouse">
+      <merge key="input.x11_driver" type="string">mouse</merge>
+      <match key="/org/freedesktop/Hal/devices/computer:system.kernel.name"
+             string="Linux">
+        <merge key="input.x11_driver" type="string">evdev</merge>
+      </match>
+    </match>
+
+    <match key="info.capabilities" contains="input.tablet">
+      <match key="/org/freedesktop/Hal/devices/computer:system.kernel.name"
+             string="Linux">
+        <merge key="input.x11_driver" type="string">evdev</merge>
+      </match>
+    </match>
+
+    <match key="info.capabilities" contains="input.keys">
+      <!-- If we're using Linux, we use evdev by default (falling back to
+           keyboard otherwise). -->
+      <merge key="input.x11_driver" type="string">keyboard</merge>
+      <match key="/org/freedesktop/Hal/devices/computer:system.kernel.name"
+             string="Linux">
+        <merge key="input.x11_driver" type="string">evdev</merge>
+      </match>
+    </match>
+
+    <!-- http://bugs.freedesktop.org/show_bug.cgi?id=22442 
+         Posts accel data through ABS_X/ABS_Y, makes X unusable -->
+    <match key="info.product" contains="ThinkPad HDAPS accelerometer data">
+        <remove key="input.x11_driver" />
+    </match>
+
+    <!-- https://bugzilla.redhat.com/show_bug.cgi?id=523914
+         Mouse does not move in PV Xen guest -->
+    <match key="info.product" contains="Xen Virtual Pointer">
+      <merge key="input.x11_options.IgnoreAbsoluteAxes" type="string">false</merge>
+      <merge key="input.x11_options.IgnoreRelativeAxes" type="string">false</merge>
+    </match>
+  </device>
+</deviceinfo>

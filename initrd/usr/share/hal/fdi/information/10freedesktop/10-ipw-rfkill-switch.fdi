@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deviceinfo version="0.2">
+
+  <device>
+    <match key="/org/freedesktop/Hal/devices/computer:system.formfactor" string="laptop">
+      <!-- Don't use generic ipw rfkill on Dells -->
+      <match key="/org/freedesktop/Hal/devices/computer:system.hardware.vendor" contains_not="Dell">
+        <match key="info.linux.driver" string_outof="ipw3945;ipw2200;ipw2100">
+          <spawn udi="/org/freedesktop/Hal/devices/ipw_wlan_switch"/>
+        </match>
+      </match>
+    </match>
+  </device>
+
+  <device>
+    <match key="info.udi" string="/org/freedesktop/Hal/devices/ipw_wlan_switch">
+      <addset key="info.capabilities" type="strlist">killswitch</addset>
+      <merge key="info.product" type="string">Intel PRO/Wireless WLAN Switch</merge>
+      <merge key="info.category" type="string">killswitch</merge>
+      <merge key="killswitch.type" type="string">wlan</merge>
+      <merge key="killswitch.access_method" type="string">ipw</merge>
+    </match>
+  </device>
+
+</deviceinfo>
+

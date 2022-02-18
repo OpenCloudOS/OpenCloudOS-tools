@@ -1,0 +1,1 @@
+install ./kernel-tlinux2_hpsa-3.10.0-1.0011.tl1.x86_64.rpm ./kernel-tlinux2_hpsa-modules-removable-media-3.10.0-1.0011.tl1.x86_64.rpm ./linux-firmware-20140804-0.1.git6bce2b0.tl1.noarch.rpm

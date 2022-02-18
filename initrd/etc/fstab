@@ -1,0 +1,15 @@
+#
+# /etc/fstab
+# Created by anaconda
+#
+# Accessible filesystems, by reference, are maintained under '/dev/disk'
+# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info
+#
+#/dev/sda1		/			ext3	noatime,acl,user_xattr	1 1
+#/dev/sda2		swap			swap	defaults	0 0
+#/dev/sda3		/usr/local		ext3	noatime,acl,user_xattr	1 2
+#/dev/sda4		/data			ext3	noatime,acl,user_xattr	1 2
+#tmpfs                   /dev/shm                tmpfs   defaults        0 0
+#devpts                  /dev/pts                devpts  gid=5,mode=620  0 0
+#sysfs                   /sys                    sysfs   defaults        0 0
+#proc                    /proc                   proc    defaults        0 0

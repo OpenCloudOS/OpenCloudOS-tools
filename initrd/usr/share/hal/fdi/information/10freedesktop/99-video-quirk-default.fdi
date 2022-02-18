@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="ISO-8859-1"?> <!-- -*- SGML -*- -->
+<deviceinfo version="0.2">
+  <!-- The aim of this file is to handle systems without any default video
+       quirks. The vast majority of hardware will not function without either
+       quirks or kernel support. pm-utils checks for kernel support before
+       utilising quirks, so these become a no-op if it's available. On the
+       assumption that quirks will, by and large, do more help than harm we can
+       provide some defaults. If any machine-specific quirks have been provided
+       then this code won't add any further ones -->
+  <device>
+    <match key="info.udi" string="/org/freedesktop/Hal/devices/computer">
+      <match key="power_management.quirk.vbestate_restore" exists="false">
+        <match key="power_management.quirk.vbemode_restore" exists="false">
+          <match key="power_management.quirk.dpms_suspend" exists="false">
+            <match key="power_management.quirk.vga_mode_3" exists="false">
+              <match key="power_management.quirk.dpms_on" exists="false">
+                <match key="power_management.quirk.radeon_off" exists="false">
+                  <match key="power_management.quirk.vbe_post" exists="false">
+                    <match key="power_management.quirk.s3_bios" exists="false">
+                      <match key="power_management.quirk.s3_mode" exists="false">
+                        <match key="power_management.quirk.none" exists="false">
+           	          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+           	          <merge key="power_management.quirk.dpms_on" type="bool">true</merge>
+           	          <merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+           	          <merge key="power_management.quirk.vbemode_restore" type="bool">true</merge>
+           	          <merge key="power_management.quirk.dpms_suspend" type="bool">true</merge>
+           	          <merge key="power_management.quirk.vga_mode_3" type="bool">true</merge>
+          	        </match>
+          	      </match>
+          	    </match>
+                  </match>
+                </match>
+              </match>
+            </match>
+          </match>
+        </match>
+      </match>
+    </match>
+  </device>
+</deviceinfo>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deviceinfo version="0.2">
+
+  <device>
+   <match key="info.capabilities" contains="net.80203">
+    <append key="info.capabilities" type="strlist">wake_on_lan</append>
+    <append key="info.interfaces" type="strlist">org.freedesktop.Hal.Device.WakeOnLan</append>
+
+    <append key="org.freedesktop.Hal.Device.WakeOnLan.method_names" type="strlist">GetSupported</append>
+    <append key="org.freedesktop.Hal.Device.WakeOnLan.method_signatures" type="strlist"></append>
+    <append key="org.freedesktop.Hal.Device.WakeOnLan.method_argnames" type="strlist"></append>
+    <append key="org.freedesktop.Hal.Device.WakeOnLan.method_execpaths" type="strlist">hal-system-wol-supported</append>
+
+    <append key="org.freedesktop.Hal.Device.WakeOnLan.method_names" type="strlist">GetEnabled</append>
+    <append key="org.freedesktop.Hal.Device.WakeOnLan.method_signatures" type="strlist"></append>
+    <append key="org.freedesktop.Hal.Device.WakeOnLan.method_argnames" type="strlist"></append>
+    <append key="org.freedesktop.Hal.Device.WakeOnLan.method_execpaths" type="strlist">hal-system-wol-enabled</append>
+
+    <append key="org.freedesktop.Hal.Device.WakeOnLan.method_names" type="strlist">SetEnabled</append>
+    <append key="org.freedesktop.Hal.Device.WakeOnLan.method_signatures" type="strlist">b</append>
+    <append key="org.freedesktop.Hal.Device.WakeOnLan.method_argnames" type="strlist">enable</append>
+    <append key="org.freedesktop.Hal.Device.WakeOnLan.method_execpaths" type="strlist">hal-system-wol-enable</append>
+
+   </match>
+
+  </device>
+</deviceinfo>

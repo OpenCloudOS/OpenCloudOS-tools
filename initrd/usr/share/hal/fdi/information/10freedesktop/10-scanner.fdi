@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- This file is only for generic matches, not for special devices (check Sane for such devices). -->
+
+<deviceinfo version="0.2">
+  <device>
+    <match key="info.category" string="scsi_generic">
+      <match key="@info.parent:scsi.type" string="scanner">
+        <addset key="info.capabilities" type="strlist">scanner</addset>
+      </match>
+    </match>
+  </device>
+</deviceinfo>

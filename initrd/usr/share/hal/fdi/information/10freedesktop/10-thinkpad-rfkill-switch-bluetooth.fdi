@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deviceinfo version="0.2">
+
+  <device>
+    <match key="platform.id" string="thinkpad_acpi">
+      <match key="/org/freedesktop/Hal/devices/platform_bluetooth:platform.id" string="bluetooth">
+        <spawn udi="/org/freedesktop/Hal/devices/thinkpad_bluetooth_switch"/>
+      </match>
+    </match>
+  </device>
+
+  <device>
+    <match key="info.udi" string="/org/freedesktop/Hal/devices/thinkpad_bluetooth_switch">
+      <addset key="info.capabilities" type="strlist">killswitch</addset>
+      <merge key="info.category" type="string">killswitch</merge>
+      <merge key="info.product" type="string">ThinkPad Bluetooth Switch</merge>
+      <merge key="killswitch.type" type="string">bluetooth</merge>
+      <merge key="killswitch.access_method" type="string">thinkpad</merge>
+      <merge key="linux.sysfs_path" type="string">/sys/devices/platform/thinkpad_acpi/bluetooth_enable</merge>
+    </match>
+  </device>
+
+</deviceinfo>

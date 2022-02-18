@@ -1,0 +1,4 @@
+# Configuration file for system-config-firewall
+
+--enabled
+--service=ssh

@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="ISO-8859-1"?> <!-- -*- SGML -*- -->
+<deviceinfo version="0.2">
+  <device>
+    <match key="system.hardware.vendor" string="AIRIS">
+      <match key="system.hardware.version" string="VT6413A">
+        <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+      </match>
+    </match>
+  </device>
+  <device>
+    <match key="system.hardware.vendor" string="AnabelleB">
+      <!-- ASI Claro TW7M Notebook -->
+      <match key="system.hardware.version" string="Claro TW7M">
+        <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+        <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+      </match>
+    </match>
+  </device>
+  <device>
+    <match key="system.hardware.vendor" prefix="COMPAL">
+      <match key="system.hardware.product" contains_outof="HEL80C;HEL80I;HEL81I">
+        <merge key="power_management.quirk.none" type="bool">true</merge>
+      </match>
+    </match>
+  </device>
+  <device>
+    <match key="system.hardware.vendor" contains="DIXONSXP">
+      <match key="system.hardware.product" contains="To be filled by O.E.M.">
+        <match key="system.firmware.version" string="Ver.001">
+	  <merge key="power_management.quirk.none" type="bool">true</merge>
+     	</match>
+     </match>
+    </match>
+  </device>
+  <device>
+    <match key="system.hardware.vendor" contains="ERGOUK">
+      <match key="system.hardware.product" contains="M2N">
+        <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+        <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+      </match>
+    </match>
+  </device>
+  <device>
+    <match key="system.hardware.vendor" string="JVC">
+      <match key="system.hardware.product" string="J2N       ">
+	<merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+      </match>
+    </match>
+  </device>
+  <device>
+    <match key="system.hardware.vendor" prefix="LG">
+      <match key="system.hardware.product" string_outof="M1-3DGBG;W1-JDGBG;LM50-DGHE;LW75-SGGV1">
+        <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+        <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+      </match>
+      <match key="system.hardware.product" string="R500-U.CPCBG">
+	<merge key="power_management.quirk.none" type="bool">true</merge>
+      </match>
+    </match>
+  </device>
+  <device>
+    <match key="system.hardware.vendor" contains="MAXDATA">
+      <match key="system.hardware.product" string="PRO600IW">
+        <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+        <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+      </match>
+      <match key="system.hardware.product" contains="Pro 6100X">
+        <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+      </match>
+      <match key="system.hardware.product" contains="IMPERIO4045A">
+        <merge key="power_management.quirk.none" type="bool">true</merge>
+      </match>
+    </match>
+  </device>
+  <device>
+    <match key="system.hardware.vendor" prefix="Matsushita">
+      <match key="system.hardware.product" prefix="CF-Y">
+        <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+      </match>
+      <match key="system.hardware.product" contains_outof="CF-51E;CF-R3E;CF-R2C;CF-R6A;CF-R6M">
+        <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+        <merge key="power_management.quirk.vbemode_restore" type="bool">true</merge>
+      </match>
+      <match key="system.hardware.product" prefix="CF-W4G">
+	<merge key="power_management.quirk.none" type="bool">true</merge>
+      </match>
+    </match>
+  </device>
+  <!-- VIA EPIA M Mini-ITX Motherboard with onboard gfx -->
+  <device>
+    <match key="system.hardware.vendor" prefix="VIA">
+      <match key="system.hardware.product" string="VT8623-8235">
+        <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+      </match>
+      <match key="system.hardware.product" string="K8N800">
+        <match key="system.firmware.version" string="VT8204B ">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+          <merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+        </match>
+      </match>
+      <match key="system.hardware.product" string="K8T400">
+        <match key="system.hardware.version" string="VT8204B ">
+          <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+          <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+        </match>
+      </match>
+      <match key="system.hardware.product" string_outof="KT400-8235;KT400A-8235">
+        <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+        <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+      </match>
+    </match>
+  </device>
+
+  <device>
+    <match key="system.hardware.vendor" string="AVERATEC">
+      <match key="system.hardware.product" string_outof="3700 Series;1000 Series">
+        <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+        <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+      </match>
+      <match key="system.hardware.product" string="3200">
+        <merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+      </match>
+      <match key="system.hardware.product" string="5500 Series">
+        <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+      </match>
+    </match>
+  </device>
+
+  <device>
+    <match key="system.hardware.vendor" prefix="BenQ">
+      <match key="system.hardware.product" string="Joybook R42">
+        <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+      </match>
+      <match key="system.hardware.product" string_outof="Joybook R22;Joybook R23;JoyBook 7000">
+        <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+        <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+      </match>
+      <match key="system.hardware.product" string_outof="Joybook S52;Joybook S32">
+        <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+        <merge key="power_management.quirk.vbemode_restore" type="bool">true</merge>
+      </match>
+    </match>
+  </device>
+
+  <device>
+    <match key="system.hardware.vendor" prefix="Elonex PLC">
+      <match key="system.hardware.product" contains="M5A">
+        <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+        <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+      </match>
+    </match>
+  </device>
+
+  <device>
+    <match key="system.hardware.vendor" prefix="GERICOM">
+      <match key="system.hardware.product" contains="HUMMER">
+        <match key="system.firmware.version" string="1.03   ">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+          <merge key="power_management.quirk.vbemode_restore" type="bool">true</merge>
+        </match>
+      </match>
+      <match key="system.hardware.product" contains="259IA1">
+        <merge key="power_management.quirk.none" type="bool">true</merge>
+      </match>
+      <!-- work only from X, models from vendor: Gericom and MTC -->
+      <match key="system.hardware.product" string="Montara-GML ">
+        <match key="system.hardware.version" string="FAB-2">
+          <merge key="power_management.quirk.none" type="bool">true</merge>
+        </match>
+      </match>
+    </match>
+  </device>
+
+  <device>
+    <match key="system.hardware.vendor" prefix="MTC">
+      <match key="system.hardware.product" string="Montara-GML">
+        <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+      </match>
+    </match>
+  </device>
+
+  <device>
+    <match key="system.hardware.vendor" prefix_ncase="micro-star">
+      <match key="system.hardware.product" string_outof="MS-1012;MS-1013">
+        <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+      </match>
+      <match key="system.hardware.product" string_outof="MS-1057;U-100">
+        <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+        <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+      </match>
+      <match key="system.hardware.product" string="PR210">
+        <match key="system.hardware.version" string="MS-1222X">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+        </match>
+      </match>
+      <match key="system.hardware.product" string="EX610">
+        <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+        <merge key="power_management.quirk.vbemode_restore" type="bool">true</merge>
+      </match>
+      <match key="system.hardware.product" string="MS-1412">
+        <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+        <merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+        <merge key="power_management.quirk.no_fb" type="bool">true</merge>
+      </match>
+      <match key="system.hardware.product" string="MS-1003">
+        <merge key="power_management.quirk.none" type="bool">true</merge>
+      </match>
+    </match>
+    <match key="system.hardware.vendor" prefix="MSI">
+      <match key="system.hardware.product" string_outof="MS-7350;MS-7207PV;MS-6417;MS-6702">
+        <merge key="power_management.quirk.none" type="bool">true</merge>
+      </match>
+    </match>
+  </device>
+
+  <device>
+    <match key="system.hardware.vendor" string="MiTAC">
+      <!-- Mitac 8350
+       system.hardware.product = ''  (string)
+       system.hardware.serial = ''  (string)
+       system.hardware.uuid = '64DBBBB4-5631-DA11-8000-4E45435F4349'  (string)
+       system.hardware.vendor = 'MiTAC'  (string)
+       system.hardware.version = '5a'  (string)
+       -->
+        <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+        <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+      </match>
+  </device>
+
+  <device>
+    <match key="system.hardware.vendor" prefix="MEDION">
+      <match key="system.hardware.product" contains="WID2010">
+        <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+        <merge key="power_management.quirk.vbemode_restore" type="bool">true</merge>
+      </match>
+      <match key="system.hardware.product" contains="MS-6714">
+        <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+        <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+      </match>
+      <match key="system.hardware.product" string_outof="MS-7012;M295M;WIM 2000 ;WIM 2140">
+        <merge key="power_management.quirk.none" type="bool">true</merge>
+      </match>
+    </match>
+  </device>
+
+  <device>
+    <match key="system.hardware.vendor" prefix="NEC">
+      <match key="system.hardware.product" contains="B7 ">
+        <merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+      </match>
+      <match key="system.hardware.product" string="VC2">
+        <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+        <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+      </match>
+      <match key="system.hardware.product" string="NEC Versa Premium">
+        <merge key="power_management.quirk.none" type="bool">true</merge>
+      </match>
+    </match>
+  </device>
+
+  <device>
+    <match key="system.hardware.vendor" prefix_ncase="packard bell">
+      <!-- this machines are strange, check also for rest of the vendor string -->
+      <match key="system.hardware.vendor" contains=" NEC">
+        <match key="system.hardware.product" string="00000000000000000000000">
+          <match key="system.hardware.version" string="P820008416">
+            <merge key="power_management.quirk.none" type="bool">true</merge>
+          </match>
+          <match key="system.firmware.version" string="A03 ">
+            <merge key="power_management.quirk.none" type="bool">true</merge>
+          </match>
+        </match>
+      </match>
+      <match key="system.hardware.product" string="EasyNote_SJ51">
+        <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+        <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+      </match>
+    </match>
+  </device>
+
+  <device>
+    <match key="system.hardware.vendor" prefix="4MBOL">
+      <match key="system.hardware.product" prefix="7521 ">
+        <match key="system.hardware.version" string="REV. A0">
+          <merge key="power_management.quirk.none" type="bool">true</merge>
+        </match>
+      </match>
+    </match>
+  </device>
+
+  <device>
+    <match key="system.hardware.vendor" string="CLEVO">
+      <match key="system.hardware.product" string="D500P">
+        <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+        <merge key="power_management.quirk.no_fb" type="bool">true</merge>
+      </match>
+      <match key="system.hardware.product" string="M5X0JE">
+        <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+      </match>
+      <match key="system.hardware.product" string="M720SR">
+        <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+        <merge key="power_management.quirk.vbemode_restore" type="bool">true</merge>
+        <merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+      </match>
+      <match key="system.hardware.product" string="TN120R">
+        <merge key="power_management.quirk.none" type="bool">true</merge>
+      </match>
+    </match>
+  </device>
+
+  <device>
+    <!-- Clevo D410J laptop reports hardware vendor "VIA", product "K8N800" and version "VT8204B" -->
+    <match key="system.hardware.vendor" string="VIA">
+      <match key="system.hardware.product" string="K8N800">
+        <match key="system.hardware.version" string="VT8204B">
+          <match key="system.firmware.version" string="4.06CJ15">
+            <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+            <merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+          </match>
+        </match>
+      </match>
+    </match>
+  </device>
+
+  <device>
+    <match key="system.hardware.vendor" string="ECS">
+      <match key="system.hardware.product" string="536">
+        <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+        <merge key="power_management.quirk.no_fb" type="bool">true</merge>
+      </match>
+    </match>
+  </device>
+
+  <device>
+    <match key="system.hardware.vendor" string="Elitegroup">
+      <match key="system.hardware.product" string="ECS G320">
+        <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+        <merge key="power_management.quirk.vbemode_restore" type="bool">true</merge>
+      </match>
+    </match>
+  </device>
+
+  <device>
+    <match key="system.hardware.vendor" prefix="Gigabyte Technology">
+      <match key="system.hardware.product" string_outof="945GCMX-S2;P35-DS4">
+        <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+        <merge key="power_management.quirk.vbemode_restore" type="bool">true</merge>
+      </match>
+      <match key="system.hardware.product" string_outof="945GZM-S2;945GCM-S2L">
+        <merge key="power_management.quirk.none" type="bool">true</merge>
+      </match>
+    </match>
+  </device>
+
+  <device>
+    <match key="system.hardware.vendor" string="Infomash">
+      <match key="system.hardware.product" string="RoverBook">
+        <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+        <merge key="power_management.quirk.vbemode_restore" type="bool">true</merge>
+      </match>
+    </match>
+  </device>
+
+  <device>
+    <match key="system.hardware.vendor" prefix="Gateway">
+      <match key="system.hardware.product" contains="MT6707">
+        <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+        <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+      </match>
+      <match key="system.hardware.product" prefix="MT6920">
+        <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+      </match>
+      <match key="system.hardware.product" contains="MX6922B ">
+        <merge key="power_management.quirk.none" type="bool">true</merge>
+      </match>
+    </match>
+  </device>
+
+  <device>
+    <match key="system.hardware.vendor" string="MaxSelect">
+      <match key="system.hardware.product" string="Mission_A330">
+        <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+        <merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+      </match>
+    </match>
+  </device>
+
+  <device>
+    <!-- medion md 96400 -->
+    <match key="system.hardware.vendor" string="NOTEBOOK">
+      <match key="system.hardware.product" string="SAM2000">
+        <match key="system.hardware.version" string="0131">
+          <merge key="power_management.quirk.none" type="bool">true</merge>
+        </match>
+      </match>
+      <!-- medion MIM2080 -->
+      <match key="system.hardware.product" string="MIM2080">
+        <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+        <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+      </match>
+    </match>
+  </device>
+
+  <device>
+    <match key="system.hardware.vendor" string="NCA_GROUP_LTD">
+      <match key="system.hardware.product" string="iRU_Notebook">
+        <match key="system.hardware.version" string="0106">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+          <merge key="power_management.quirk.vbemode_restore" type="bool">true</merge>
+        </match>
+      </match>
+    </match>
+  </device>
+
+  <device>
+    <match key="system.hardware.vendor" prefix="transtec AG">
+      <match key="system.hardware.product" string_outof="MS-1057;MS-1034">
+        <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+        <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+      </match>
+    </match>
+  </device>
+
+  <device>
+    <match key="system.hardware.vendor" string="To Be Filled By O.E.M.">
+      <match key="system.hardware.product" string="259IA1">
+        <match key="system.hardware.version" string="To Be Filled By O.E.M.">
+          <match key="system.firmware.version" string="080010 ">
+            <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+          </match>
+        </match>
+      </match>
+      <match key="system.hardware.product" string="MS-7210">
+        <match key="system.hardware.version" string="100">
+          <merge key="power_management.quirk.none" type="bool">true</merge>
+        </match>
+      </match>
+    </match>
+  </device>
+
+  <device>
+    <match key="system.hardware.vendor" string="OEM">
+      <!-- rebranded Uniwill P53IN -->	
+      <match key="system.hardware.product" string="P53IN4">
+        <merge key="power_management.quirk.none" type="bool">true</merge>
+      </match>
+    </match>
+  </device>
+
+  <device>
+    <match key="system.hardware.vendor" string="OQO">
+      <match key="system.hardware.product" string="ZEPTO">
+        <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+        <merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+      </match>
+    </match>
+  </device>
+
+  <device>
+    <match key="system.hardware.vendor" string="SHARP">
+      <match key="system.hardware.product" prefix="PC-AR10 ">
+        <merge key="power_management.quirk.none" type="bool">true</merge>
+      </match>
+    </match>
+  </device>
+
+  <device>
+    <match key="system.hardware.vendor" string="Shuttle Inc">
+      <match key="system.hardware.product" string="SD11V10">
+        <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+      </match>
+      <match key="system.hardware.product" string="SD30V10">
+        <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+        <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+      </match>
+      <match key="system.hardware.product" string="SN41UV10">
+        <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+        <merge key="power_management.quirk.vbemode_restore" type="bool">true</merge>
+      </match>
+      <match key="system.hardware.product" string="SN85V10">
+        <merge key="power_management.quirk.none" type="bool">true</merge>
+      </match>
+    </match>
+  </device>
+
+  <device>
+    <match key="system.hardware.vendor" string="ZEPTO">
+      <match key="system.hardware.product" prefix="ZNOTE">
+        <match key="system.hardware.version" prefix="3215W">
+          <merge key="power_management.quirk.none" type="bool">true</merge>
+        </match>
+      </match>
+    </match>
+  </device>
+
+</deviceinfo>

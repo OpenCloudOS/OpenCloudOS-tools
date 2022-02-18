@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?> <!-- -*- SGML -*- -->
+<deviceinfo version="0.2">
+  <device>
+    <match key="system.hardware.vendor" prefix="Apple">
+      <match key="system.hardware.product" string="MacBook2,1">
+        <match key="system.hardware.vendor" prefix="Apple Inc.">
+      	  <match key="system.hardware.version" string="1.0">
+             <!-- needs VBE_SAVE from console, but that slows resuming -->
+             <merge key="power_management.quirk.none" type="bool">true</merge>
+          </match>
+        </match>
+        <match key="system.hardware.vendor" contains="Computer, Inc.">
+           <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+        </match>
+      </match>
+
+      <match key="system.hardware.product" string_outof="MacBook1,1;MacBook3,1">
+	<!-- s2ram uses vbe_post + vbemode_restore for MacBook1,1 -->
+        <merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+      </match>
+
+      <match key="system.hardware.product" string="MacBookPro1,1">
+        <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+      </match>
+      <match key="system.hardware.product" string="MacBookPro2,2">
+        <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+        <merge key="power_management.quirk.vbemode_restore" type="bool">true</merge>
+      </match>
+
+    </match>
+  </device>
+</deviceinfo>

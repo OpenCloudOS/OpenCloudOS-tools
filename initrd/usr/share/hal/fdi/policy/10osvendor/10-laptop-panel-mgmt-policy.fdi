@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deviceinfo version="0.2">
+
+  <device>
+    <match key="info.category" string="laptop_panel">
+      <!-- only set if the laptop_panel.access_method is not custom -->
+      <match key="laptop_panel.access_method" compare_ne="custom">
+	<!-- for the generic sysfs interfaces -->
+	<match key="linux.sysfs_path" exists="true">
+	  <append key="info.addons" type="strlist">hald-addon-generic-backlight</append>
+	</match>
+	<!-- for all the procfs related brightness interfaces -->
+	<match key="linux.sysfs_path" exists="false">
+          <append key="info.interfaces" type="strlist">org.freedesktop.Hal.Device.LaptopPanel</append>
+
+          <append key="org.freedesktop.Hal.Device.LaptopPanel.method_names" type="strlist">SetBrightness</append>
+          <append key="org.freedesktop.Hal.Device.LaptopPanel.method_signatures" type="strlist">i</append>
+          <append key="org.freedesktop.Hal.Device.LaptopPanel.method_argnames" type="strlist">brightness_value</append>
+      	  <append key="org.freedesktop.Hal.Device.LaptopPanel.method_execpaths" type="strlist">hal-system-lcd-set-brightness</append>
+
+          <append key="org.freedesktop.Hal.Device.LaptopPanel.method_names" type="strlist">GetBrightness</append>
+          <append key="org.freedesktop.Hal.Device.LaptopPanel.method_signatures" type="strlist"></append>
+          <append key="org.freedesktop.Hal.Device.LaptopPanel.method_argnames" type="strlist"></append>
+	  <append key="org.freedesktop.Hal.Device.LaptopPanel.method_execpaths" type="strlist">hal-system-lcd-get-brightness</append>
+        </match>
+      </match>
+    </match>
+  </device>
+
+</deviceinfo>

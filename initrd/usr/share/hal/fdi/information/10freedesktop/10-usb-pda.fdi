@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deviceinfo version="0.2">
+
+  <device>
+    <match key="info.capabilities" contains="serial">
+      <!-- Pocket PC PDAs -->
+      <match key="@serial.originating_device:info.linux.driver" string="ipaq">
+	<merge key="pda.platform" type="string">pocketpc</merge>
+	<merge key="info.product" type="string">Pocket PC PDA</merge>
+	<merge key="pda.pocketpc.hotsync_interface" type="copy_property">serial.device</merge>
+      </match>
+
+      <!-- PalmOS PDAs via Linux 'visor' kernel driver -->
+      <match key="@serial.originating_device:info.linux.driver" string="visor">
+
+	<!--
+	    on Sony Clie 3.5 devices we need to mark port 0 instead of port 1. For
+	    this reason, we mark the usb interface with port number to use (FIXME: is
+	    there a better solution?). However, we should also do this for clies that
+	    have been upgraded to a later version of OS, but I'm not sure if those have
+	    the same product id - in that case this would not work for them. The driver
+	    doumentation however advertises that the information about what port should
+	    be used is written to syslog, perhaps we can somehow get that information
+	    from the driver directly?)
+	-->
+	<match key="@serial.originating_device:usb.vendor_id" int="0x054c">
+  	  <!-- Sony Clie: 3.5, SJ-22 -->
+          <match key="@serial.originating_device:usb.product_id" int_outof="0x0038;0x0066">
+            <match key="serial.port" int="0">
+              <merge key="pda.platform" type="string">palm</merge>
+              <merge key="pda.palm.hotsync_interface" type="copy_property">serial.device</merge>
+            </match>
+          </match>
+	</match>
+
+        <!-- Handspring -->
+	<match key="@serial.originating_device:usb.vendor_id" int="0x082d">
+  	  <!-- Visor -->
+          <match key="@serial.originating_device:usb.product_id" int="0x0100">
+            <match key="serial.port" int="1">
+              <merge key="pda.platform" type="string">palm</merge>
+              <merge key="pda.palm.hotsync_interface" type="copy_property">serial.device</merge>
+            </match>
+          </match>
+	</match>
+
+	<!-- Known Palm PDAs from Palm, Inc. -->
+	<match key="@serial.originating_device:usb.vendor_id" int="0x0830">
+  	  <!-- Palm m130 -->
+          <match key="@serial.originating_device:usb.product_id" int="0x0050">
+            <match key="serial.port" int="0">
+              <merge key="pda.platform" type="string">palm</merge>
+              <merge key="pda.palm.hotsync_interface" type="copy_property">serial.device</merge>
+            </match>
+          </match>
+  	  <!-- Tungsten T5 -->
+          <match key="@serial.originating_device:usb.product_id" int="0x0061">
+            <match key="serial.port" int="1">
+              <merge key="pda.platform" type="string">palm</merge>
+              <merge key="pda.palm.hotsync_interface" type="copy_property">serial.device</merge>
+            </match>
+          </match>
+	</match>
+
+  	<!-- All the other PalmOS PDAs as fallback -->
+	<match key="pda.platform" exists="false">
+          <match key="serial.port" int="0">
+            <merge key="pda.platform" type="string">palm</merge>
+            <merge key="pda.palm.hotsync_interface" type="copy_property">serial.device</merge>
+          </match>
+          <match key="serial.port" int="1">
+            <merge key="pda.platform" type="string">palm</merge>
+            <merge key="pda.palm.hotsync_interface" type="copy_property">serial.device</merge>
+          </match>
+	</match>
+
+      </match>
+    </match>
+
+    <!-- PalmOS PDAs via libusb -->
+    <match key="info.subsystem" string="usb_device">
+
+      <!-- Sony -->
+      <match key="usb_device.vendor_id" int="0x054c">
+        <!-- Sony NR and other Palm OS 4.1, Sony S S320 and other Palm OS 3.5, Sony T, SJ series, and other Palm OS 4.0,
+	     Sony S360, Sony NR70V/U, Sony NX, Sony NZ, Sony UX, Sony TJ
+	  -->
+        <match key="usb_device.product_id" int_outof="0x000a;0x0038;0x0066;0x0095;0x009a;0x00da;0x00e9;0x0144;0x0169">
+          <merge key="pda.platform" type="string">palm</merge>
+          <merge key="pda.palm.hotsync_interface" type="copy_property">linux.device_file</merge>
+        </match>
+      </match>
+
+      <!-- Handspring -->
+      <match key="usb_device.vendor_id" int="0x082d">
+        <!-- Visor/Treo 300, Treo, Treo 600  -->
+        <match key="usb_device.product_id" int_outof="0x0100;0x0200;0x0300">
+          <merge key="pda.platform" type="string">palm</merge>
+          <merge key="pda.palm.hotsync_interface" type="copy_property">linux.device_file</merge>
+        </match>
+      </match>
+
+      <!-- Palm, Inc. and palmOne -->
+      <match key="usb_device.vendor_id" int="0x0830">
+        <!-- m500,m505,m515,2xunknown,i705,Tungsten Z,Tungsten W,m125,m130,3x unknown,
+	     (Tungsten series, Zire 71), 3x(Zire 21, 31, 72, Z22, Tungsten E2, T3, TX, Treo 650, 680, LifeDrive),
+	     2x Zire, m100, 2y unknown -->
+        <match key="usb_device.product_id" int_outof="0x0001;0x0002;0x0003;0x0010;0x0011;0x0020;0x0030;0x0031;0x0040;0x0050;0x0051;0x0052;0x0053;0x0060;0x0061;0x0062;0x0063;0x0070;0x0071;0x0080;0x0099;0x0100">
+          <merge key="pda.platform" type="string">palm</merge>
+          <merge key="pda.palm.hotsync_interface" type="copy_property">linux.device_file</merge>
+        </match>
+      </match>
+
+      <!-- Samsung -->
+      <match key="usb_device.vendor_id" int="0x04e8">
+        <!-- i330 -->
+        <match key="usb_device.product_id" int="0x8001">
+          <merge key="pda.platform" type="string">palm</merge>
+          <merge key="pda.palm.hotsync_interface" type="copy_property">linux.device_file</merge>
+        </match>
+      </match>
+
+      <!-- Garmin -->
+      <match key="usb_device.vendor_id" int="0x091e">
+        <!-- IQUE 3600 -->
+        <match key="usb_device.product_id" int="0x0004">
+          <merge key="pda.platform" type="string">palm</merge>
+          <merge key="pda.palm.hotsync_interface" type="copy_property">linux.device_file</merge>
+        </match>
+      </match>
+
+      <!-- Kyocera -->
+      <match key="usb_device.vendor_id" int="0x0c88">
+        <!-- 7135 Smartphone, 6035 Smartphone -->
+        <match key="usb_device.product_id" int_outof="0x0021;0xa226">
+          <merge key="pda.platform" type="string">palm</merge>
+          <merge key="pda.palm.hotsync_interface" type="copy_property">linux.device_file</merge>
+        </match>
+      </match>
+
+      <!-- Tapwave -->
+      <match key="usb_device.vendor_id" int="0x12ef">
+        <!-- Zodiac, Zodiac2 -->
+        <match key="usb_device.product_id" int="0x0100">
+          <merge key="pda.platform" type="string">palm</merge>
+          <merge key="pda.palm.hotsync_interface" type="copy_property">linux.device_file</merge>
+        </match>
+      </match>
+
+      <!-- Aceeca -->
+      <match key="usb_device.vendor_id" int="0x4766">
+        <!-- MEZ1000 -->
+        <match key="usb_device.product_id" int="0x0001">
+          <merge key="pda.platform" type="string">palm</merge>
+          <merge key="pda.palm.hotsync_interface" type="copy_property">linux.device_file</merge>
+        </match>
+      </match>
+
+      <!-- Alphasmart -->
+      <match key="usb_device.vendor_id" int="0x081e">
+        <!-- Alphasmart Dana -->
+        <match key="usb_device.product_id" int="0xdf00">
+          <merge key="pda.platform" type="string">palm</merge>
+          <merge key="pda.palm.hotsync_interface" type="copy_property">linux.device_file</merge>
+        </match>
+      </match>
+
+      <!-- Add generic keys here for all pda devices -->
+
+      <match key="pda.platform" exists="true">
+	<addset key="info.capabilities" type="strlist">pda</addset>	
+      </match>
+
+    </match>
+
+  </device>
+
+</deviceinfo>

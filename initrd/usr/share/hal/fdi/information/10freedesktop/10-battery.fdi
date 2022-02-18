@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?> <!-- -*- xml -*- --> 
+
+<deviceinfo version="0.2">
+  <device>
+    <match key="info.category" string="battery">
+
+      <!-- OLPC's power management system provides charge level change notifications -->
+      <match key="info.udi" contains="olpc_battery">
+        <merge key="battery.quirk.do_not_poll" type="bool">true</merge>
+      </match>
+
+    </match>
+  </device>
+</deviceinfo>

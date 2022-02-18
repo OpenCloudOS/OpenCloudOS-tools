@@ -1,0 +1,64 @@
+#!/bin/sh
+#
+# Copyright (C) 2005 Richard Hughes <richard@hughsie.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
+if [ "$HAL_PROP_LAPTOP_PANEL_ACCESS_METHOD" = "pmu" ]; then
+	hal-system-power-pmu setlcd $value
+	if [ $? -ne 0 ]; then
+		echo "org.freedesktop.Hal.Device.LaptopPanel.NotSupported" >&2
+		echo "hal-system-power-pmu setlcd returned != 0" >&2
+		exit 1
+	fi
+	exit 0
+elif [ "$HAL_PROP_LAPTOP_PANEL_ACCESS_METHOD" = "sonypi" ]; then
+	hal-system-sonypic setlcd $value
+	if [ $? -ne 0 ]; then
+		echo "org.freedesktop.Hal.Device.LaptopPanel.NotSupported" >&2
+		echo "hal-system-sonypic setlcd returned != 0" >&2
+		exit 1
+	fi
+	exit 0
+fi
+
+# Check for file existance and that it's writable
+if [ ! -w $HAL_PROP_LINUX_ACPI_PATH ]; then
+	echo "org.freedesktop.Hal.Device.LaptopPanel.NotSupported" >&2
+	echo "$1 not writable!" >&2
+	exit 1
+fi
+
+if [ "$HAL_PROP_LAPTOP_PANEL_ACCESS_METHOD" = "toshiba" ]; then
+	# echo "brightness: {0..x}" >/proc/acpi/toshiba/lcd
+	echo "brightness: $value" > $HAL_PROP_LINUX_ACPI_PATH
+elif [ "$HAL_PROP_LAPTOP_PANEL_ACCESS_METHOD" = "asus" ]; then
+	# echo {0..15} > /proc/acpi/asus/brn
+	# http://www.taupro.com/wiki/ChemBook/LCDdisplayPowerConfiguration
+	echo "$value" > $HAL_PROP_LINUX_ACPI_PATH
+elif [ "$HAL_PROP_LAPTOP_PANEL_ACCESS_METHOD" = "panasonic" ]; then
+	# echo {0..15} > /proc/acpi/pcc/brightness
+	# http://readlist.com/lists/vger.kernel.org/linux-kernel/7/36405.html
+	echo "$value" > $HAL_PROP_LINUX_ACPI_PATH
+elif [ "$HAL_PROP_LAPTOP_PANEL_ACCESS_METHOD" = "ibm" ]; then
+	# echo "level {0..7}" > /proc/acpi/ibm/brightness
+	# http://ibm-acpi.sourceforge.net/README
+	echo "level $value" > $HAL_PROP_LINUX_ACPI_PATH
+elif [ "$HAL_PROP_LAPTOP_PANEL_ACCESS_METHOD" = "sony" ]; then
+	# echo "{1..8}" > /proc/acpi/sony/brightness
+	# http://popies.net/sonypi/2.6-sony_acpi4.patch
+	echo "$((value + 1))" > $HAL_PROP_LINUX_ACPI_PATH
+elif [ "$HAL_PROP_LAPTOP_PANEL_ACCESS_METHOD" = "omnibook" ]; then
+	# echo "{0..7} || {0...11}" > /proc/omnibook/lcd
+	# http://bugzilla.gnome.org/show_bug.cgi?id=331458
+	echo "$value" > $HAL_PROP_LINUX_ACPI_PATH
+else
+	echo "org.freedesktop.Hal.Device.LaptopPanel.NotSupported" >&2
+	echo "No ACPI method found" >&2
+	exit 1
+fi
+
+exit 0

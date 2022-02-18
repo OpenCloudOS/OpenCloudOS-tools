@@ -1,0 +1,84 @@
+#!/bin/bash
+#
+# Copyright (C) 2007 Holger Macht <holger@homac.de>
+#
+# Author: Holger Macht <holger@homac.de>
+#
+# This file is released under the GPLv2.
+#
+
+SUPPORT_FLAGS=
+IFACE="$HAL_PROP_NET_INTERFACE"
+
+wol_get_flags() {
+    SUPPORT_FLAGS=`ethtool $IFACE | awk '/Supports Wake-on:/{if ($3 ~ /g/) print $3 }'`
+    [ -n "$SUPPORT_FLAGS" ] && return 0
+    echo "org.freedesktop.Hal.Device.WakeOnLAN.NotSupported" >&2
+    echo "Network interface does not support Wake On LAN" >&2
+    exit 1
+}
+
+wol_supported() {
+    wol_get_flags
+    [ -n "$SUPPORT_FLAGS" ] && return 0
+    return 1
+}
+
+wol_enabled() {
+    ENABLED=`ethtool $IFACE | awk '/[^s ]Wake-on:/{if ($2 ~ /g/) print $2 }'`
+    [ -n "$ENABLED" ] && return 0
+    return 1
+}
+
+wol_enable() {
+    wol_get_flags
+
+    if [ -z "$SUPPORT_FLAGS" ]; then
+	echo "No support flags set, using default: g"
+	SUPPORT_FLAGS=g
+    fi
+
+    ethtool -s $IFACE wol $SUPPORT_FLAGS
+    if [ "$?" != "0" ]; then
+	echo "error enabling wake on LAN for interface $IFACE"
+	return 1
+    fi
+}
+
+wol_disable() {
+    ethtool -s $IFACE wol d
+    if [ "$?" != "0" ]; then
+	echo "error disabling wake on LAN for interface $IFACE"
+	return 1
+    fi
+}
+
+which ethtool >/dev/null 2>&1
+if [ "$?" != "0" ]; then
+    echo "org.freedesktop.Hal.Device.WakeOnLan.NoEthtool" >&2
+    echo -e "No ethtool found in \$PATH" >&2
+    exit 1
+fi
+
+case "`basename $0`" in
+    hal-system-wol-supported-linux)
+	wol_supported
+	;;
+    hal-system-wol-enabled-linux)
+	wol_enabled
+	;;
+    hal-system-wol-enable-linux)
+	if [ "$enable" = "true" ]; then
+	    wol_enable
+	elif [ "$enable" = "false" ]; then
+	    wol_disable
+	else
+	    echo "org.freedesktop.Hal.Device.WakeOnLAN.InvalidArgument" >&2
+	    echo "argument must be of boolean type" >&2
+	    exit 1
+	fi
+	;;
+    *) ;;
+esac
+
+exit $?

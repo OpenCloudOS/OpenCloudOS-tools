@@ -1,0 +1,8 @@
+b $STORAGE             104 0    1 256 cciss/c0d%d%|p%d 0 16
+b $STORAGE             105 0    1 256 cciss/c1d%d%|p%d 0 16
+b $STORAGE             106 0    1 256 cciss/c2d%d%|p%d 0 16
+b $STORAGE             107 0    1 256 cciss/c3d%d%|p%d 0 16
+b $STORAGE             108 0    1 256 cciss/c4d%d%|p%d 0 16
+b $STORAGE             109 0    1 256 cciss/c5d%d%|p%d 0 16
+b $STORAGE             110 0    1 256 cciss/c6d%d%|p%d 0 16
+b $STORAGE             111 0    1 256 cciss/c7d%d%|p%d 0 16

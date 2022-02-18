@@ -1,0 +1,7 @@
+# dist macros.
+%rhel 6
+%centos 6
+%centos_ver 6
+%tlniux 1
+%tlniux_ver 1
+%dist .tl1

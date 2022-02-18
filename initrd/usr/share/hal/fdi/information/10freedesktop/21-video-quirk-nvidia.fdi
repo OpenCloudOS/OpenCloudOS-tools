@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?> <!-- -*- SGML -*- -->
+<!-- According to nvidia, the only currently supported way to resume g80
+     class hardware is to re-run a cached copy of the video BIOS. No other
+     quirks will be effective -->
+<deviceinfo version="0.2">
+  <device>
+    <match key="system.hardware.primary_video.vendor" int="0x10de">
+      <match key="system.hardware.primary_video.product" int_outof="0x190;0x191;0x192;0x193;0x194;0x195;0x196;0x197;0x198;0x199;0x19a;0x19b;0x19c;0x19d;0x19e;0x19f;0x400;0x401;0x402;0x403;0x404;0x405;0x406;0x407;0x408;0x409;0x40a;0x40b;0x40c;0x40d;0x40e;0x40f;0x420;0x421;0x422;0x423;0x424;0x425;0x426;0x427;0x428;0x429;0x42a;0x42b;0x42c;0x42d;0x42e;0x42f">
+        <remove key="power_management.quirk.vbestate_restore"></remove>
+        <remove key="power_management.quirk.vbemode_restore"></remove>
+        <remove key="power_management.quirk.dpms_suspend"></remove>
+        <remove key="power_management.quirk.dpms_on"></remove>
+        <remove key="power_management.quirk.radeon_off"></remove>
+        <remove key="power_management.quirk.s3_bios"></remove>
+        <remove key="power_management.quirk.s3_mode"></remove>
+        <remove key="power_management.quirk.vga_mode_3"></remove>
+        <remove key="power_management.quirk.none"></remove>
+        <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+      </match>
+    </match>
+  </device>
+</deviceinfo>

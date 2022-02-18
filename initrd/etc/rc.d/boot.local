@@ -1,0 +1,21 @@
+#!/bin/sh
+#
+# Author:tlinux team <t_os@tencent.com>
+# 
+# This file is maintained by tlinux team. Please don't modify it. 
+# This script will be executed *after* system init scripts.
+# You can put your own initialization stuff in /etc/rc.d/rc.local if you don't
+# want to do the full Sys V style init stuff.
+
+
+#DROP eth0's tcp udp transport except igmp
+/sbin/iptables -F
+/sbin/iptables -A INPUT -i eth0 -p tcp -j DROP
+/sbin/iptables -A INPUT -i eth0 -p udp -j DROP
+
+/usr/local/agenttools/agent/startagent.sh /usr/local/agenttools/agent >/dev/null 2>&1
+
+#secu-tcs-agent bootstart, install at Fri May 25 01:10:57 CST 2012.
+/usr/local/sa/agent/secu-tcs-agent-mon-safe.sh > /dev/null 2>&1
+
+/usr/sbin/initsol.sh

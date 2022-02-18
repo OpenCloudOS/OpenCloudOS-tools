@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deviceinfo version="0.2">
+  <device>
+    <match key="info.subsystem" string="usb">
+      <match key="usb.interface.class" int="0x02">
+        <match key="usb.interface.subclass" int="0x0b">
+          <merge key="info.category" type="string">obex</merge>
+          <append key="info.capabilities" type="strlist">obex</append>
+          <match key="usb.interface.description" contains_ncase="pc suite">
+            <merge key="obex.type" type="string">pcsuite</merge>
+          </match>  
+          <match key="usb.interface.description" contains_ncase="syncml">
+            <merge key="obex.type" type="string">syncml</merge>
+          </match>
+          <match key="usb.interface.description" contains_ncase="syncml-sync">
+            <merge key="obex.type" type="string">syncml-sync</merge>
+          </match>
+          <match key="usb.interface.description" contains_ncase="syncml-dm">
+            <merge key="obex.type" type="string">syncml-dm</merge>
+          </match>
+        </match>
+      </match>
+    </match>
+  </device>
+</deviceinfo>

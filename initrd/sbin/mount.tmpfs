@@ -1,0 +1,51 @@
+#! /bin/bash
+#
+# Copyright (C) 2009 Eric Paris <eparis@redhat.com>
+#                    Daniel Walsh <dwalsh@redhat.com>
+#                    Karel Zak <kzak@redhat.com>
+#
+# http://bugzilla.redhat.com/show_bug.cgi?id=476964
+#
+# Usage:
+# /sbin/mount.tmpfs spec dir [-sfnv] [-o options]
+#
+
+case $1 in
+  -h|--help|-?)
+      echo "mount.tmpfs is a private mount(8) wrapper for tmpfs."
+      echo "Don't use it directly!"
+      exit 1
+      ;;
+esac
+
+restricted=1
+
+if [ $UID -eq 0 ] && [ $UID -eq $EUID ]; then
+  restricted=0
+fi
+
+# mount(8) in restricted mode (for non-root users) does not allow to use any
+# mount options, types or so on command line. We have to call mount(8) with
+# mountpoint only.  All necessary options have to be defined in /etc/fstab.
+#
+# https://bugzilla.redhat.com/show_bug.cgi?id=615719
+#
+if [ $restricted -eq 1 ]; then
+  exec /bin/mount -i "$2"
+fi
+
+# Remount with context mount options is unsupported
+# http://bugzilla.redhat.com/show_bug.cgi?id=563267
+#
+if ! echo "$@" | grep -q -E '\-o.*remount';  then
+
+  if ! echo "$@" | grep -q -E '(fs|def|root)?context='; then
+     con=$(ls --scontext -d "$2" | cut -f 1 -d ' ')
+     if [ -n "$con" ] && [ "$con" != "?" ] && [ "$con" != "unlabeled" ]; then 
+        exec /bin/mount "$@" -o "rootcontext=\"$con\"" -i -t tmpfs
+     fi
+  fi
+
+fi
+
+exec /bin/mount "$@" -i -t tmpfs

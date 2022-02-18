@@ -1,0 +1,18 @@
+# Aliases for sound devices.
+a sound audio
+a sound audioctl
+a sound dsp
+a sound midi
+a sound mixer
+a sound mpu401
+a sound patmgr
+a sound rmidi
+a sound sequencer
+a sound smpte
+a sound sndstat
+a sound srnd
+a sound snd
+a sound aload
+l audio0 audio
+l dsp0 dsp
+l mixer0 mixer

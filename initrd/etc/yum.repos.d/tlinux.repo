@@ -1,0 +1,112 @@
+# tlinux repo
+#
+# Derived from CentOS: /etc/yum.repos.d/CentOS-*.repo
+#
+# Author: tlinux team <t_os@tencent.com>
+# Date: 2011-10-11
+# In order to resolve "mirrorlist-tlinux.tencent.com", add IP to /etc/hosts
+#
+# 2011-10-26. Add CentOS repo, and CentOS-XXX.repo will be removed. 
+# 2012-03-22. Add CentOS fasttrack, tlinux-testing
+# 2012-10-12. CentOS repos revert to RPM-GPG-KEY-CentOS.
+#	      gpgcheck=1 default.	
+#	      Add tlinux-testing-{SRPMS,debuginfo}
+#	      http to https
+
+[base]
+name=CentOS-$releasever - Base
+mirrorlist=https://tlinux-mirrorlist.tencent-cloud.com/?release=$releasever&arch=$basearch&repo=os
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+[updates]
+name=CentOS-$releasever - Updates
+mirrorlist=https://tlinux-mirrorlist.tencent-cloud.com/?release=$releasever&arch=$basearch&repo=updates
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+[fasttrack]
+name=CentOS-$releasever - fasttrack
+mirrorlist=https://tlinux-mirrorlist.tencent-cloud.com/?release=$releasever&arch=$basearch&repo=fasttrack
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+[extras]
+name=CentOS-$releasever - Extras
+mirrorlist=https://tlinux-mirrorlist.tencent-cloud.com/?release=$releasever&arch=$basearch&repo=extras
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+#additional packages that extend functionality of existing packages
+[centosplus]
+name=CentOS-$releasever - Plus
+mirrorlist=https://tlinux-mirrorlist.tencent-cloud.com/?release=$releasever&arch=$basearch&repo=centosplus
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+#contrib - packages by Centos Users
+[contrib]
+name=CentOS-$releasever - Contrib
+mirrorlist=https://tlinux-mirrorlist.tencent-cloud.com/?release=$releasever&arch=$basearch&repo=contrib
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+# Set "enabled=0" if cr removed
+[cr]
+name=CentOS-$releasever - CR
+mirrorlist=https://tlinux-mirrorlist.tencent-cloud.com/?release=$releasever&arch=$basearch&repo=cr
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+# tlinux
+[tlinux]
+name=tlinux-$releasever - tlinux 
+mirrorlist=https://tlinux-mirrorlist.tencent-cloud.com/?release=$releasever&arch=$basearch&repo=tlinux
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-tlinux-1
+
+[tlinux-SRPMS]
+name=tlinux - tlinux-SRPMS
+mirrorlist=https://tlinux-mirrorlist.tencent-cloud.com/?release=$releasever&repo=tlinux/SRPMS
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-tlinux-1
+
+[tlinux-debuginfo]
+name=tlinux - tlinux-debuginfo 
+mirrorlist=https://tlinux-mirrorlist.tencent-cloud.com/?release=$releasever&arch=$basearch&repo=tlinux/debuginfo
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-tlinux-1
+
+# tlinux-testing: disable default
+[tlinux-testing]
+name=tlinux-$releasever - tlinux-testing
+mirrorlist=https://tlinux-mirrorlist.tencent-cloud.com/?release=$releasever&arch=$basearch&repo=tlinux-testing
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-tlinux-1
+
+[tlinux-testing-SRPMS]
+name=tlinux-$releasever - tlinux-testing-SRPMS
+mirrorlist=https://tlinux-mirrorlist.tencent-cloud.com/?release=$releasever&arch=$basearch&repo=tlinux-testing/SRPMS
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-tlinux-1
+
+[tlinux-testing-debuginfo]
+name=tlinux-$releasever - tlinux-testing-debuginfo
+mirrorlist=https://tlinux-mirrorlist.tencent-cloud.com/?release=$releasever&arch=$basearch&repo=tlinux-testing/debuginfo
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-tlinux-1
+
+

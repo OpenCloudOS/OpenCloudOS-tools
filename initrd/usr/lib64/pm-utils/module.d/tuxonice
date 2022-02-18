@@ -1,0 +1,36 @@
+#!/bin/sh
+
+export TUXONICE_LOC
+# TODO tuxonice supports all sorts of knobs to twiddle. Since this should be as
+# simple as possible, it does not provide a mechanism for twiddling those knobs.
+# If you need more customization than this file has, consider using a hook to
+# set the appropriate values.
+
+# more locations might be nice
+for loc in "/sys/power/tuxonice" "/sys/power/suspend2"; do
+	[ -d "${loc}" ] && { TUXONICE_LOC="${loc}"; break; }
+done 
+
+if [ -z "$HIBERNATE_MODULE" -a -n "$TUXONICE_LOC" ] && \
+	[ -f "${TUXONICE_LOC}/do_hibernate" ]; then
+	HIBERNATE_MODULE="tuxonice"
+	do_hibernate()
+	{
+		echo 5 > "${TUXONICE_LOC}/powerdown_method"
+		echo anything > "${TUXONICE_LOC}/do_hibernate"
+	}
+fi
+
+if [ -z "$SUSPEND_HYBRID_MODULE" -a -n "$TUXONICE_LOC" ] && \
+	grep -q mem /sys/power/state && \
+	[ -f "${TUXONICE_LOC}/do_hibernate" ]; then
+	SUSPEND_HYBRID_MODULE="tuxonice"
+	do_suspend_hybrid()
+	{
+		echo 3 >"${TUXONICE_LOC}/powerdown_method"
+		echo anything >"${TUXONICE_LOC}/do_hibernate"
+		[ -f /sys/power/tuxonice/did_suspend_to_both ] && \
+	    	[ "$(cat /sys/power/tuxonice/did_suspend_to_both)" != "1" ] && \
+	    	REVERSE="thaw"
+	}
+fi

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+#format sda
+
+test -d /mnt/harddisk/usr/local || test -p /mnt/hardisk/usr/local

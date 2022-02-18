@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1"?> <!-- -*- SGML -*- -->
+<deviceinfo version="0.2">
+  <device>
+    <match key="system.hardware.vendor" prefix_ncase="Samsung">
+      <match key="system.hardware.product" string_outof="Q35/Q36;SM40S;SQ45S70S">
+        <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+        <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+      </match>
+      <match key="system.hardware.product" string_outof="SQ30;SQ35S;SX50S">
+        <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+      </match>
+      <!-- Samsung UMPC, P35 (NOTE: there is a s2ram report for CoronaR to need no quirks)-->
+      <match key="system.hardware.product" string_outof="R40/R41;CoronaR;SX22S">
+        <merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+      </match>
+      <match key="system.hardware.product" string_outof="SX20S;SENS V25;NX05S">
+        <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+        <merge key="power_management.quirk.vbemode_restore" type="bool">true</merge>
+      </match>
+      <match key="system.hardware.product" string="SQ10">
+        <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+        <merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+      </match>
+      <!-- these need no quirks to suspend/resume -->
+      <match key="system.hardware.product" contains_outof="R50/R51;R55S;SR700">
+        <merge key="power_management.quirk.none" type="bool">true</merge>
+      </match>
+    </match>
+  </device>
+
+</deviceinfo>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deviceinfo version="0.2">
+
+  <device>
+    <match key="info.capabilities" contains="input">
+      <match key="info.capabilities" contains="button">
+	<match key="info.addons.singleton" contains_not="hald-addon-input">
+	  <append key="info.addons.singleton" type="strlist">hald-addon-input</append>
+        </match>
+      </match>
+      <match key="info.capabilities" contains="input.keys">
+	<match key="info.addons.singleton" contains_not="hald-addon-input">
+	  <append key="info.addons.singleton" type="strlist">hald-addon-input</append>
+        </match>
+        <match key="info.capabilities" contains_not="button">
+	  <append key="info.capabilities" type="strlist">button</append>
+        </match>
+      </match>
+    </match>
+  </device>
+
+</deviceinfo>
