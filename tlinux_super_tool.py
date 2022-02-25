@@ -15,9 +15,9 @@
 # Created By  : Songqiao Tao
 # Email       : joeytao@tencent.com
 # Created Date: Fri Mar 24 2017
-# Update Date : Wed Feb 18 2022
+# Update Date : Wed Feb 25 2022
 # Description : Backup and Recover system for OpenCloudOS
-# Version     : 3.0.1
+# Version     : 3.0.2
 # ====================================
 
 import shutil

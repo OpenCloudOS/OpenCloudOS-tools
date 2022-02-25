@@ -16,7 +16,7 @@
 #
 . /usr/lib/opencloudos-tools/tos-lib.sh
 scriptversion=3.0;
-scriptdate=2022-02-18;
+scriptdate=2022-02-25;
 
 usage="\
 tos version $scriptversion
