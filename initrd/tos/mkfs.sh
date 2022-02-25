@@ -112,23 +112,26 @@ else
 			exit 1
 		fi
 
-	#recovery-mode,and not find format_${INSDISK}4=1, don't format /dev/${INSDISK}4
+	#recovery-mode,and not find format_data=1, don't format data disk
 		grep -q "recovery-mode" /proc/cmdline
 		r_flag=$?
-		grep -q "format_${INSDISK}4=1" /proc/cmdline
+		read DATA_PART < "/tmp/datapart.txt"
+		grep -q "format_data=1" /proc/cmdline
 		if [ $? -ne 0 -a $r_flag -eq 0 ]; then
-        	/tos/tlog -m "recovery-mode, and format_${INSDISK}4=0, don't format /dev/${INSDISK}4"
+        	/tos/tlog -m "recovery-mode, and format_data=0, don't format /dev/${DATA_PART}"
 		else
         	if [ -f /tlinux_not_part ]; then
-				/tos/tlog -m "by default, don't format /dev/${INSDISK}4"
+				/tos/tlog -m "by default, don't format /dev/${DATA_PART}"
+			elif [ "$DATA_PART" == "${INSDISK}1" ] || [ "$DATA_PART" == "${INSDISK}2" ]; then
+				/tos/tlog -m "/data is under ${INSDISK}, should not format again."
 			else
-				/tos/tlog -m "Disk format /dev/${INSDISK}4 start"
+				/tos/tlog -m "Disk format /dev/${DATA_PART} start"
 			#$MKFS_CMD -E lazy_itable_init=1 /dev/${INSDISK}4
-				$MKFS_CMD /dev/${INSDISK}4
+				$MKFS_CMD /dev/${DATA_PART}
 				if [ $? -eq 0 ]; then
-					/tos/tlog -m "Disk format /dev/${INSDISK}4 done"
+					/tos/tlog -m "Disk format /dev/${DATA_PART} done"
 				else
-					/tos/tlog -m "Disk format /dev/${INSDISK}4 failed"
+					/tos/tlog -m "Disk format /dev/${DATA_PART} failed"
 					exit 1
 				fi
 			fi

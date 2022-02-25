@@ -167,6 +167,8 @@ def main():
         pass
 
     root_disk = os.getenv("INSDISK")
+    if "nvme" in root_disk:
+        root_disk = root_disk + "p"
 
     is_vm = os.getenv("VM")
     OSNAME_PT = re.compile(r"osname=(\S+)")

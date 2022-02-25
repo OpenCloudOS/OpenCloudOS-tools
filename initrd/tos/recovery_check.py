@@ -149,17 +149,24 @@ def main():
     ROOTMAX_PT = re.compile(r"rootsize=max")
     
     root_disk = os.getenv("INSDISK")
+    if "nvme" in root_disk:
+        root_disk = root_disk + "p"
     is_vm = os.getenv("VM")
     m = ROOTMAX_PT.search(cmdline)
-    if (m or is_vm) and os.path.exists('sys/firmware/efi'):
+    if (m or is_vm == '1') and os.path.exists('sys/firmware/efi'):
         root_part = os.path.join("/dev/", root_disk + "2")
         efi_disk = os.path.join("/dev/", root_disk + "1")
     else:
         root_part = os.path.join("/dev/", root_disk + "1")
         efi_disk = os.path.join("/dev/", root_disk + "2")
+    print("root partition is %s" % root_part)
     subprocess.check_call(["mount", root_part, root])
     if os.path.exists('sys/firmware/efi'):
         efi_path = os.path.join(root, 'boot/efi')
+        try:
+            os.makedirs(efi_path)
+        except:
+            pass
         subprocess.check_call(["mount", efi_disk, efi_path])
 
     remove_grub_entry(root)

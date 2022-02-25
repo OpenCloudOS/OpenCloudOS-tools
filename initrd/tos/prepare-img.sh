@@ -76,8 +76,8 @@ install_from_hd() {
         # use sda4 first, than choose the first *db(sdb/vdb), than use installation disk
         # this is only for kvm install
         getdisk=$(lsblk | grep db[^1-9] | awk 'NR==1{print $1}')
-        if [ -b /dev/sda4 ]; then
-            DATA_PART="sda4"
+        if [ -b /dev/${INSDISK}4 ]; then
+            DATA_PART="${INSDISK}4"
         elif [ -n "${getdisk}" ]; then
             DATA_PART=${getdisk}1
         else
@@ -92,7 +92,7 @@ install_from_hd() {
   	fi
 	export DATA_PART
 	export DATA_PATH="/data"
-
+	echo "$DATA_PART" > "/tmp/datapart.txt"
 	grep -q "xvda" /proc/cmdline
 	if [ $? -eq 0 ]; then
 		mount /dev/sdb1 /tos/img/

@@ -2,24 +2,59 @@
 /tos/tlog -m "modify fstab start"
 
 
-
-
 set_uuid()
 {
     if [ -f "/tos/use_uuid_flag" ]; then
 		/tos/tlog -m "use uuid, update fstab with uuid"
 
 		grep -q "rootsize=max" /proc/cmdline
-        if [ $? -eq 0 -o $VM -eq 1 ] && [ -d /sys/firmware/efi ]; then
-            rootpart=${INSDISK}2
-        else
-            rootpart=${INSDISK}1
+        if [ $? -eq 0 -o $VM -eq 1 ]; then
+			if [ -d /sys/firmware/efi ]; then
+            	rootpart=${INSDISK}2
+				efipart=${INSDISK}1
+				efi_line=`grep "^[^#].*\s/boot/efi\s" $ROOT/etc/fstab`
+				if [ $? -eq 0 ]; then
+					old_dev=`echo $efi_line | awk '{print $1}'`
+					sed -i "s/^$old_dev/\/dev\/$efipart/" $ROOT/etc/fstab
+				fi
+        	else
+            	rootpart=${INSDISK}1
+			fi
+		else
+			rootpart=${INSDISK}1
+			part2dev=${INSDISK}2
+			usrlocalpart=${INSDISK}3
+			datapart=${INSDISK}4
+
+			if [ -d /sys/firmware/efi ]; then
+            	diskpart2="/boot/efi"
+        	else
+            	diskpart2="swap"
+			fi
+		
+			part2_line=`grep "^[^#].*\s${diskpart2}\s" $ROOT/etc/fstab`
+			if [ $? -eq 0 ]; then
+				old_dev=`echo $part2_line | awk '{print $1}'`
+				sed -i "s/^$old_dev/\/dev\/$part2dev/" $ROOT/etc/fstab
+			fi
+			usrlocal_line=`grep "^[^#].*\s/usr/local\s" $ROOT/etc/fstab`
+			if [ $? -eq 0 ]; then
+				old_dev=`echo $usrlocal_line | awk '{print $1}'`
+				sed -i "s/^$old_dev/\/dev\/$usrlocalpart/" $ROOT/etc/fstab
+			fi
+			data_line=`grep "^[^#].*\s/data\s" $ROOT/etc/fstab`
+			if [ $? -eq 0 ]; then
+				old_dev=`echo $data_line | awk '{print $1}'`
+				sed -i "s/^$old_dev/\/dev\/$datapart/" $ROOT/etc/fstab
+			fi
         fi
-		root_uuid_line=`grep "UUID.*\s/\s" $ROOT/etc/fstab`
+
+		root_line=`grep "^[^#].*\s/\s" $ROOT/etc/fstab`
 		if [ $? -eq 0 ]; then
-			root_uuid=`echo $root_uuid_line | awk '{print $1}'`
-			sed -i "s/^$root_uuid/\/dev\/$rootpart/" $ROOT/etc/fstab
+			old_dev=`echo $root_line | awk '{print $1}'`
+			sed -i "s/^$old_dev/\/dev\/$rootpart/" $ROOT/etc/fstab
 		fi
+
 		for i in $(seq 1 5)
 		do
 			grep -q "/dev/${INSDISK}$i" $ROOT/etc/fstab

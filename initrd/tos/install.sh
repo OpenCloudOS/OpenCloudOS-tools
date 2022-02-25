@@ -72,7 +72,7 @@ if [ $get_disk_flag -eq 0 ]; then
   else
         # choose the first *da(sda/vda) to install, rather than using sda default
         # this is only for kvm install
-        getdisk=$(lsblk | grep da[^1-9] | awk 'NR==1{print $1}')
+        getdisk=$(lsblk | grep -E 'da\s|nvme[0-9]n[0-9]\s' | awk 'NR==1{print $1}')
         if [ -n "${getdisk}" ]; then
             IN_DISK=${getdisk}
         fi
