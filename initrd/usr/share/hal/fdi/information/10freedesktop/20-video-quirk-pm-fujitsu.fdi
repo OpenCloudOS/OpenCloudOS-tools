@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="ISO-8859-1"?> <!-- -*- SGML -*- -->
+<deviceinfo version="0.2">
+  <device>
+    <match key="system.hardware.vendor" prefix="FUJITSU">
+
+      <match key="system.hardware.product" contains_ncase="amilo">
+        <match key="system.hardware.product" contains_outof="A1667G Serie;Pa 1510;Li 1718;M1425">
+          <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains_outof="Pro V3205;Pro Edition V3405;Pro Edition V3505;Xi 1546;Si 1520;A7640;Pi 1505;A1645">
+          <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+          <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains="A1650G">
+          <merge key="power_management.quirk.vbemode_restore" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" string="M Series">
+          <merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains_outof="Amilo D Series;PRO V2030;PRO V2035;PRO V8010;Pi 1536;Pi 2515; L Series">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+          <merge key="power_management.quirk.vbemode_restore" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains_outof="AMILO M;A Series">
+          <match key="system.hardware.version" contains_outof="-1 ;0.01">
+            <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+            <merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+	    <match key="system.firmware.version" prefix="R01-S0N">
+              <merge key="power_management.quirk.pci_save" type="bool">true</merge>
+            </match>
+          </match>
+        </match>
+        <match key="system.hardware.product" contains="A7645">
+          <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+          <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+          <merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains_outof="Pro V2040;Pro Series V3525">
+          <merge key="power_management.quirk.none" type="bool">true</merge>
+        </match>
+      </match>
+
+      <match key="system.hardware.product" contains_ncase="lifebook">
+        <match key="system.hardware.product" contains_outof="P7010D;S2110">
+          <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains_outof="E8410;T4010;S2210;P8010">
+          <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+          <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+        </match>
+        <!-- S7020 is also reported with s3_bios/s3_mode/pci_save -->
+        <match key="system.hardware.product" contains="S7020">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+          <merge key="power_management.quirk.reset_brightness" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains_outof="E4010;P7120">
+          <merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains_outof="E8020;S6410">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+          <merge key="power_management.quirk.vbemode_restore" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains="T2010">
+	  <match key="system.hardware.product" string="FUJITSU SIEMENS">
+            <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+            <merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+            <merge key="power_management.quirk.pci_save" type="bool">true</merge>
+          </match>
+          <match key="system.hardware.product" string="FUJITSU">
+            <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+            <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+          </match>
+        </match>
+        <match key="system.hardware.product" contains_outof="T4210;P7230">
+	  <merge key="power_management.quirk.pci_save" type="bool">true</merge>
+	  <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+          <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains_outof="B Series;T Series;S7010;S7110;E8110;T301;T3010">
+          <merge key="power_management.quirk.none" type="bool">true</merge>
+        </match>
+      </match>
+
+      <match key="system.hardware.product" prefix="SCENIC">
+        <match key="system.hardware.product" contains_outof="N300/N600;W300/W600;P / SCENICO P">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+          <merge key="power_management.quirk.vbemode_restore" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" suffix=" W">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+          <merge key="power_management.quirk.vbemode_restore" type="bool">true</merge>
+        </match>
+      </match>
+
+      <match key="system.hardware.product" prefix_outof="ESPRIMO P;ESPRIMO Mobile M9400;ESPRIMO Mobile D9500">
+        <merge key="power_management.quirk.none" type="bool">true</merge>
+      </match>
+
+      <match key="system.hardware.product" string="Stylistic ST5000">
+        <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+        <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+      </match>
+
+      <match key="system.hardware.product" string="P6VAP-AP">
+        <merge key="power_management.quirk.none" type="bool">true</merge>
+      </match>
+
+    </match>
+    
+    <!-- different vendor string -->
+    <match key="system.hardware.vendor" prefix="FUJITSO">
+      <match key="system.hardware.product" string="FMVLT70R">
+        <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+        <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+        <merge key="power_management.quirk.pci_save" type="bool">true</merge>
+      </match>
+    </match>
+
+  </device>
+</deviceinfo>

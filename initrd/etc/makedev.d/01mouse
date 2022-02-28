@@ -1,0 +1,20 @@
+# Alias for "mouse" to all of the in-kernel mouse types.
+a mouse adbmouse
+a mouse amigamouse
+a mouse atarimouse
+a mouse atimouse
+a mouse atibm
+a mouse inportbm
+a mouse input/mice
+a mouse input/mouse
+a mouse isictl
+a mouse jmouse
+a mouse logibm
+a mouse logimouse
+a mouse msmouse
+a mouse psaux
+a mouse psmouse
+a mouse smouse
+a mouse sunmouse
+# a mouse usb/mouse
+a mouse vpcmouse

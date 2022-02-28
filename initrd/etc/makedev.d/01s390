@@ -1,0 +1,36 @@
+# s390/s390x-specific devices
+c $ROOT                37   0  2  16 rtibm%d
+c $ROOT                37   1  2  16 ntibm%d
+b $ROOT                37   0  1  16 btibm%d
+l                                    xpram0    slram0
+l                                    xpram1    slram1
+l                                    xpram2    slram2
+l                                    xpram3    slram3
+l                                    xpram4    slram4
+l                                    xpram5    slram5
+l                                    xpram6    slram6
+l                                    xpram7    slram7
+l                                    xpram8    slram8
+l                                    xpram9    slram9
+l                                    xpram10   slram10
+l                                    xpram11   slram11
+l                                    xpram12   slram12
+l                                    xpram13   slram13
+l                                    xpram14   slram14
+l                                    xpram15   slram15
+l                                    xpram16   slram16
+l                                    xpram17   slram17
+l                                    xpram18   slram18
+l                                    xpram19   slram19
+l                                    xpram20   slram20
+l                                    xpram21   slram21
+l                                    xpram22   slram22
+l                                    xpram23   slram23
+l                                    xpram24   slram24
+l                                    xpram25   slram25
+l                                    xpram26   slram26
+l                                    xpram27   slram27
+l                                    xpram28   slram28
+l                                    xpram29   slram29
+l                                    xpram30   slram30
+l                                    xpram31   slram31

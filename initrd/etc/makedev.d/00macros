@@ -1,0 +1,14 @@
+=ALLREAD  644 root root
+=ALLWRITE 666 root root
+=FLOPPY   660 root floppy
+=KMEM     640 root kmem	 
+=PRINTER  660 root lp
+=PTY      666 root tty
+=ROOT     600 root root
+=SERIAL   660 root uucp
+=STORAGE  640 root disk
+=TTY      620 root tty
+=VCSA     620 vcsa tty
+
+# Define "console" as an alias for root for specifying input devices and such.
+=CONSOLE  $ROOT

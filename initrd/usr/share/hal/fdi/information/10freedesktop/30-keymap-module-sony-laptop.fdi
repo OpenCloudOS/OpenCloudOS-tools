@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?> <!-- -*- SGML -*- -->
+
+<deviceinfo version="0.2">
+  <device>
+    <!-- These are buttons synthesized in the sony-laptop kernel module
+         You can find the scancodes in the kernel source of the module (drivers/misc/sony-laptop.c) -->
+    <match key="input.product" string="Sony Vaio Keys">
+      <match key="/org/freedesktop/Hal/devices/computer:system.hardware.vendor" prefix="Sony">
+        <append key="info.capabilities" type="strlist">input.keymap</append>
+
+        <append key="input.keymap.data" type="strlist">0x0b:switchvideomode</append> <!-- Fn+F7 switch crt/lcd -->
+        <append key="input.keymap.data" type="strlist">0x0e:zoom</append> <!-- Fn+F10 zoom -->
+        <append key="input.keymap.data" type="strlist">0x10:suspend</append> <!-- Fn+F12 hibernate -->
+        <append key="input.keymap.data" type="strlist">0x06:mute</append> <!-- Fn+F2 mute -->
+        <append key="input.keymap.data" type="strlist">0x07:volumedown</append> <!-- Fn+F3 mixer down -->
+        <append key="input.keymap.data" type="strlist">0x08:volumeup</append> <!-- Fn+F4 mixer up -->
+        <append key="input.keymap.data" type="strlist">0x09:brightnessdown</append> <!-- Fn+F5 brightness up -->
+        <append key="input.keymap.data" type="strlist">0x0a:brightnessup</append> <!-- Fn+F6 brightness down -->
+
+	<!-- Older Vaios have a different keymap -->
+	<match key="/org/freedesktop/Hal/devices/computer:system.hardware.product" contains_outof="PCG-C1;PCG-K25;PCG-F1;PCG-F2;PCG-F3;PCG-F4;PCG-F5;PCG-F6;PCG-FX;PCG-FRV;PCG-GR;PCG-TR;PCG-NV;PCG-Z;VGN-S360;VGN-SZ2HP_B">
+          <remove key="input.keymap.data" type="strlist">0x06:mute</remove>
+	  <append key="input.keymap.data" type="strlist">0x06:battery</append>
+          <remove key="input.keymap.data" type="strlist">0x07:volumedown</remove>
+          <append key="input.keymap.data" type="strlist">0x07:mute</append>
+	</match>
+	
+     </match>
+    </match>
+  </device>
+</deviceinfo>
+

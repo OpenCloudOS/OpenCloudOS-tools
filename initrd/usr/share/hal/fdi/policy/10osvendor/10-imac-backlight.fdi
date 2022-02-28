@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deviceinfo version="0.2">
+  <device>
+    <match key="system.kernel.name" string="Linux">
+      <match key="system.hardware.vendor" contains="Apple">
+	<!-- iMac (Core 2 Duo), iMac (24-inch Core 2 Duo), iMac (Alu 24-inch Core 2 Duo) -->
+	<match key="system.hardware.product" string_outof="iMac5,1;iMac6,1;iMac7,1">
+          <spawn udi="/org/freedesktop/Hal/devices/imac_backlight"/>
+        </match>
+      </match>
+    </match>
+  </device>
+  <device>
+    <match key="info.udi" string="/org/freedesktop/Hal/devices/imac_backlight">
+      <append key="info.capabilities" type="strlist">laptop_panel</append>
+      <merge key="info.category" type="string">laptop_panel</merge>
+      <merge key="info.product" type="string">iMac Backlight Control</merge>
+      <merge key="laptop_panel.access_method" type="string">custom</merge>
+      <merge key="laptop_panel.num_levels" type="int">15</merge>
+      <append key="info.addons" type="strlist">hald-addon-imac-backlight</append>
+    </match>
+  </device>
+</deviceinfo>

@@ -1,0 +1,17 @@
+223:ca09498a7921753bc0580dcb9fe9ffd90ba8e5ef
+0
+6
+base:6294:1358341704
+cr:0:1323866564
+fasttrack:124:1334151749
+tlinux:394:1388995022
+tlinux-debuginfo:70:1388995062
+updates:954:1370569728
+1
+mbr: kernel-tlinux,x86_64,0,2.6.32.43,1.0.8.tl1 70
+  repo: tlinux
+  ts_state: i
+  output_state: 30
+  isDep: False
+  reason: user
+  reinstall: True

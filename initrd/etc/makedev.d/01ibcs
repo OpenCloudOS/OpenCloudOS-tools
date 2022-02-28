@@ -1,0 +1,16 @@
+# Aliases for ibcs.
+a ibcs2 egp
+a ibcs2 ggp
+a ibcs2 icmp
+a ibcs2 idp
+a ibcs2 inet
+a ibcs2 ip
+a ibcs2 ipip
+a ibcs2 nfsd
+a ibcs2 null
+a ibcs2 pup
+a ibcs2 socksys
+a ibcs2 spx
+a ibcs2 rawip
+a ibcs2 tcp
+a ibcs2 X0R

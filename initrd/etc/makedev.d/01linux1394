@@ -1,0 +1,11 @@
+# This file last updated 26 August 2004.
+# video1394 devices, from http://www.linux1394.org/video1394.php
+c $ROOT                171   0  1   1 raw1394
+c $ROOT                171  16  1   4 video1394/%d
+# dv1394 devices, from http://www.linux1394.org/dv1394.php
+c $ROOT                171  32  4   4 ieee1394/dv/host%d/NTSC/in	
+c $ROOT                171  33  4   4 ieee1394/dv/host%d/NTSC/out	
+c $ROOT                171  34  4   4 ieee1394/dv/host%d/PAL/in	
+c $ROOT                171  35  4   4 ieee1394/dv/host%d/PAL/out
+# amdtp, from http://www.linux1394.org/amdtp.php
+#c $ROOT                171  48  1   1 amdtp

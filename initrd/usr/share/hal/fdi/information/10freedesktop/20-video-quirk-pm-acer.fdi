@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="ISO-8859-1"?> <!-- -*- SGML -*- -->
+<deviceinfo version="0.2">
+  <device>
+    <match key="system.hardware.vendor" prefix_ncase="Acer">
+      <match key="system.hardware.product" prefix="TravelMate">
+        <match key="system.hardware.product" contains="C300">
+          <merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains_outof="2350;2410;2420;2490;3220;4000;4650;5320">
+          <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+          <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains_outof="3000;4100">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+          <merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains_outof="2300;2310;3010;3020;6291">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+          <merge key="power_management.quirk.vbemode_restore" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains="3260">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+          <merge key="power_management.quirk.vbemode_restore" type="bool">true</merge>
+          <merge key="power_management.quirk.pci_save" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains_outof="7520;8000">
+          <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains_outof="C100;6460">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains_outof="C200;2450;4400;6492">
+          <merge key="power_management.quirk.none" type="bool">true</merge>
+        </match>
+
+	<!-- these need the full name to prevent mixes with other machines
+             NOTE: HAL removes whitespaces at the end of the sysfs and dmidecode output,
+                   we need to do exact string matches.
+         -->
+        <match key="system.hardware.product" string_outof="TravelMate 240;TravelMate 250;TravelMate 650">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+          <merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" string="TravelMate 380">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+          <merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+          <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+        </match>
+        <!-- TravelMate 630Lci -->
+        <match key="system.hardware.product" string_outof="TravelMate 630;TravelMate 230">
+           <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+           <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" string="TravelMate 660">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+          <merge key="power_management.quirk.vbemode_restore" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" string="TravelMate 800">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+        </match>
+      </match>
+
+      <match key="system.hardware.product" prefix="Aspire">
+        <match key="system.hardware.product" contains="5050">
+          <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains_outof="1670;3610;3620;3690;5630">
+          <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+          <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains="5610">
+          <!-- report from s2ram for a 5610Z, not sure if the 5610 is the same, so do this check -->
+	  <match key="system.hardware.product" contains="5610Z">
+            <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+            <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+          </match>
+	  <match key="system.hardware.product" contains_not="5610Z">
+            <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+          </match>
+        </match>
+        <match key="system.hardware.product" contains_outof="5000;5020;5500">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains="1640">
+          <merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains_outof="1500;3000">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+          <merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+        </match>
+	<match key="system.hardware.product" contains_outof="1520;1650;5100;5110;5570;5920">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+          <merge key="power_management.quirk.vbemode_restore" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains_outof="1690;1694">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+          <merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+          <merge key="power_management.quirk.no_fb" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" suffix="1350">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+          <merge key="power_management.quirk.vbemode_restore" type="bool">true</merge>
+          <merge key="power_management.quirk.no_fb" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains_outof="2010;2920;3100;4520;5500Z;5580;5920G">
+          <merge key="power_management.quirk.none" type="bool">true</merge>
+        </match>
+      </match>
+
+      <match key="system.hardware.product" prefix="Extensa">
+        <match key="system.hardware.product" contains="6220">
+          <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains_outof="2900;3000;4150;5620">
+          <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+          <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains="5220">
+          <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+        </match>
+      </match>
+
+      <match key="system.hardware.product" prefix="Ferrari">
+        <match key="system.hardware.product" contains="4000">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+          <merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+          <merge key="power_management.quirk.no_fb" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains="1000">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+          <merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+        </match>
+	<!-- does not work with fglrx -->
+        <match key="system.hardware.product" contains="5000">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+          <merge key="power_management.quirk.vbemode_restore" type="bool">true</merge>
+        </match>
+      </match>
+
+      <match key="system.hardware.product" prefix="Xspire">
+        <match key="system.hardware.product" contains="1650">
+          <merge key="power_management.quirk.none" type="bool">true</merge>
+        </match>
+      </match>
+
+      <match key="system.hardware.product" prefix="AcerPower">
+        <match key="system.hardware.product" contains="2000">
+          <merge key="power_management.quirk.none" type="bool">true</merge>
+        </match>
+      </match>
+
+      <!-- Aspire One 110 -->
+      <match key="system.hardware.product" prefix_outof="AOA110;AOA150">
+        <merge key="power_management.quirk.none" type="bool">true</merge>
+      </match>
+
+    </match>
+  </device>
+</deviceinfo>

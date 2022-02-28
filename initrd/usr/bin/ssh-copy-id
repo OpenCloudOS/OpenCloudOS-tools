@@ -1,0 +1,61 @@
+#!/bin/sh
+
+# Shell script to install your public key on a remote machine
+# Takes the remote machine name as an argument.
+# Obviously, the remote machine must accept password authentication,
+# or one of the other keys in your ssh-agent, for this to work.
+
+ID_FILE="${HOME}/.ssh/id_rsa.pub"
+
+if [ "-i" = "$1" ]; then
+  shift
+  # check if we have 2 parameters left, if so the first is the new ID file
+  if [ -n "$2" ]; then
+    if expr "$1" : ".*\.pub" > /dev/null ; then
+      ID_FILE="$1"
+    else
+      ID_FILE="$1.pub"
+    fi
+    shift         # and this should leave $1 as the target name
+  fi
+else
+  if [ x$SSH_AUTH_SOCK != x ] ; then
+    GET_ID="$GET_ID ssh-add -L"
+  fi
+fi
+
+if [ -z "`eval $GET_ID`" ] && [ -r "${ID_FILE}" ] ; then
+  GET_ID="cat ${ID_FILE}"
+fi
+
+if [ -z "`eval $GET_ID`" ]; then
+  echo "$0: ERROR: No identities found" >&2
+  exit 1
+fi
+
+if [ "$#" -lt 1 ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+  echo "Usage: $0 [-i [identity_file]] [user@]machine" >&2
+  exit 1
+fi
+
+PUB_KEY_TYPE=$(if grep -q "BEGIN SSH2" ${ID_FILE}; then echo "SSH2"; else echo "OPENSSH"; fi)
+#This need Openssh's ssh-keygen, not SSH2 
+if [ "$PUB_KEY_TYPE" == "OPENSSH" ]; then
+	SSH2_KEY=$(ssh-keygen -e -f $ID_FILE)
+fi	
+
+{ eval "$GET_ID" ; } | ssh $1 "if ssh -V 2>&1 | grep -qi openssh; then  umask 077;test -d ~/.ssh || mkdir ~/.ssh ; cat >> ~/.ssh/authorized_keys && (test -x /sbin/restorecon && /sbin/restorecon ~/.ssh ~/.ssh/authorized_keys >/dev/null 2>&1 || true); else umask 077;test -d ~/.ssh2 || mkdir ~/.ssh2; if [ \"$PUB_KEY_TYPE\" == \"OPENSSH\" ]; then echo '$SSH2_KEY' > ~/.ssh2/$ID_FILE; else cat >> ~/.ssh2/$ID_FILE; fi ;echo \"Key $ID_FILE\" >> ~/.ssh2/authorization ;  fi" || exit 1
+
+cat <<EOF
+Now try logging into the machine, with "ssh '$1'", and check in:
+
+  .ssh/authorized_keys
+
+to make sure we haven't added extra keys that you weren't expecting.
+
+Or if remote host is SSH2, check in:
+
+  .ssh2/authorization 
+  and it's public key.
+
+EOF

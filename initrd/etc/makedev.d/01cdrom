@@ -1,0 +1,18 @@
+# Just some aliases for non-SCSI, non-ATAPI CD-ROM devices.
+a cdrom aztcd
+a cdrom bpcd
+a cdrom cdu31a
+a cdrom cdu535
+a cdrom cm205cd
+a cdrom cm206cd
+a cdrom gscd
+a cdrom hitcd
+a cdrom i2o/hdcd
+a cdrom mcd
+a cdrom mcdx
+a cdrom optcd
+a cdrom sdcd
+a cdrom sjcd
+a cdrom sonycd
+a cdrom sbpcd
+l sbpcd sbpcd0

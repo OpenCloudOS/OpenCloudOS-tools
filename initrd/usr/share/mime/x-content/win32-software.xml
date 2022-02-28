@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mime-type xmlns="http://www.freedesktop.org/standards/shared-mime-info" type="x-content/win32-software">
+  <!--Created automatically by update-mime-database. DO NOT EDIT!-->
+  <comment>Windows software</comment>
+  <comment xml:lang="pl">Oprogramowanie systemu Windows</comment>
+  <sub-class-of type="x-content/software"/>
+</mime-type>

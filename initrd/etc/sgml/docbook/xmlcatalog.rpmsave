@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<!DOCTYPE catalog PUBLIC "-//OASIS//DTD Entity Resolution XML Catalog V1.0//EN" "http://www.oasis-open.org/committees/entity/release/1.0/catalog.dtd">
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+  <public publicId="ISO 8879:1986//ENTITIES Publishing//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.5-1.0-51.el6/ent/isopub.ent"/>
+  <public publicId="ISO 8879:1986//ENTITIES Greek Letters//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.5-1.0-51.el6/ent/isogrk1.ent"/>
+  <public publicId="-//OASIS//ELEMENTS DocBook XML Information Pool V4.1.2//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.1.2-1.0-51.el6/dbpoolx.mod"/>
+  <public publicId="ISO 8879:1986//ENTITIES Box and Line Drawing//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.5-1.0-51.el6/ent/isobox.ent"/>
+  <public publicId="-//OASIS//DTD DocBook XML V4.1.2//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.1.2-1.0-51.el6/docbookx.dtd"/>
+  <public publicId="ISO 8879:1986//ENTITIES Greek Symbols//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.5-1.0-51.el6/ent/isogrk3.ent"/>
+  <public publicId="ISO 8879:1986//ENTITIES Added Math Symbols: Negated Relations//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.5-1.0-51.el6/ent/isoamsn.ent"/>
+  <public publicId="ISO 8879:1986//ENTITIES Numeric and Special Graphic//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.5-1.0-51.el6/ent/isonum.ent"/>
+  <public publicId="-//OASIS//ENTITIES DocBook XML Character Entities V4.1.2//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.1.2-1.0-51.el6/dbcentx.mod"/>
+  <public publicId="ISO 8879:1986//ENTITIES Alternative Greek Symbols//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.5-1.0-51.el6/ent/isogrk4.ent"/>
+  <public publicId="-//OASIS//ENTITIES DocBook XML Notations V4.1.2//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.1.2-1.0-51.el6/dbnotnx.mod"/>
+  <public publicId="ISO 8879:1986//ENTITIES Diacritical Marks//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.5-1.0-51.el6/ent/isodia.ent"/>
+  <public publicId="ISO 8879:1986//ENTITIES Monotoniko Greek//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.5-1.0-51.el6/ent/isogrk2.ent"/>
+  <public publicId="-//OASIS//ENTITIES DocBook XML Additional General Entities V4.1.2//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.1.2-1.0-51.el6/dbgenent.mod"/>
+  <public publicId="-//OASIS//ELEMENTS DocBook XML Document Hierarchy V4.1.2//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.1.2-1.0-51.el6/dbhierx.mod"/>
+  <public publicId="ISO 8879:1986//ENTITIES Added Math Symbols: Arrow Relations//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.5-1.0-51.el6/ent/isoamsa.ent"/>
+  <public publicId="ISO 8879:1986//ENTITIES Added Math Symbols: Ordinary//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.5-1.0-51.el6/ent/isoamso.ent"/>
+  <public publicId="ISO 8879:1986//ENTITIES Russian Cyrillic//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.5-1.0-51.el6/ent/isocyr1.ent"/>
+  <public publicId="ISO 8879:1986//ENTITIES General Technical//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.5-1.0-51.el6/ent/isotech.ent"/>
+  <public publicId="ISO 8879:1986//ENTITIES Added Math Symbols: Delimiters//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.5-1.0-51.el6/ent/isoamsc.ent"/>
+  <public publicId="-//OASIS//DTD XML Exchange Table Model 19990315//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.5-1.0-51.el6/soextblx.dtd"/>
+  <public publicId="-//OASIS//DTD DocBook XML CALS Table Model V4.1.2//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.1.2-1.0-51.el6/calstblx.dtd"/>
+  <public publicId="ISO 8879:1986//ENTITIES Added Latin 1//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.5-1.0-51.el6/ent/isolat1.ent"/>
+  <public publicId="ISO 8879:1986//ENTITIES Added Math Symbols: Binary Operators//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.5-1.0-51.el6/ent/isoamsb.ent"/>
+  <public publicId="ISO 8879:1986//ENTITIES Added Latin 2//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.5-1.0-51.el6/ent/isolat2.ent"/>
+  <public publicId="ISO 8879:1986//ENTITIES Added Math Symbols: Relations//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.5-1.0-51.el6/ent/isoamsr.ent"/>
+  <public publicId="ISO 8879:1986//ENTITIES Non-Russian Cyrillic//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.5-1.0-51.el6/ent/isocyr2.ent"/>
+  <rewriteSystem systemIdStartString="http://www.oasis-open.org/docbook/xml/4.1.2" rewritePrefix="/usr/share/sgml/docbook/xml-dtd-4.1.2-1.0-51.el6"/>
+  <rewriteURI uriStartString="http://www.oasis-open.org/docbook/xml/4.1.2" rewritePrefix="/usr/share/sgml/docbook/xml-dtd-4.1.2-1.0-51.el6"/>
+  <public publicId="-//OASIS//ELEMENTS DocBook XML Information Pool V4.2//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.2-1.0-51.el6/dbpoolx.mod"/>
+  <public publicId="-//OASIS//DTD DocBook XML V4.2//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.2-1.0-51.el6/docbookx.dtd"/>
+  <public publicId="-//OASIS//ENTITIES DocBook XML Character Entities V4.2//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.2-1.0-51.el6/dbcentx.mod"/>
+  <public publicId="-//OASIS//ENTITIES DocBook XML Notations V4.2//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.2-1.0-51.el6/dbnotnx.mod"/>
+  <public publicId="-//OASIS//ENTITIES DocBook XML Additional General Entities V4.2//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.2-1.0-51.el6/dbgenent.mod"/>
+  <public publicId="-//OASIS//ELEMENTS DocBook XML Document Hierarchy V4.2//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.2-1.0-51.el6/dbhierx.mod"/>
+  <public publicId="-//OASIS//DTD DocBook XML CALS Table Model V4.2//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.2-1.0-51.el6/calstblx.dtd"/>
+  <rewriteSystem systemIdStartString="http://www.oasis-open.org/docbook/xml/4.2" rewritePrefix="/usr/share/sgml/docbook/xml-dtd-4.2-1.0-51.el6"/>
+  <rewriteURI uriStartString="http://www.oasis-open.org/docbook/xml/4.2" rewritePrefix="/usr/share/sgml/docbook/xml-dtd-4.2-1.0-51.el6"/>
+  <public publicId="-//OASIS//ELEMENTS DocBook XML Information Pool V4.3//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.3-1.0-51.el6/dbpoolx.mod"/>
+  <public publicId="-//OASIS//DTD DocBook XML V4.3//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.3-1.0-51.el6/docbookx.dtd"/>
+  <public publicId="-//OASIS//ENTITIES DocBook XML Character Entities V4.3//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.3-1.0-51.el6/dbcentx.mod"/>
+  <public publicId="-//OASIS//ENTITIES DocBook XML Notations V4.3//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.3-1.0-51.el6/dbnotnx.mod"/>
+  <public publicId="-//OASIS//ENTITIES DocBook XML Additional General Entities V4.3//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.3-1.0-51.el6/dbgenent.mod"/>
+  <public publicId="-//OASIS//ELEMENTS DocBook XML Document Hierarchy V4.3//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.3-1.0-51.el6/dbhierx.mod"/>
+  <public publicId="-//OASIS//DTD DocBook XML CALS Table Model V4.3//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.3-1.0-51.el6/calstblx.dtd"/>
+  <rewriteSystem systemIdStartString="http://www.oasis-open.org/docbook/xml/4.3" rewritePrefix="/usr/share/sgml/docbook/xml-dtd-4.3-1.0-51.el6"/>
+  <rewriteURI uriStartString="http://www.oasis-open.org/docbook/xml/4.3" rewritePrefix="/usr/share/sgml/docbook/xml-dtd-4.3-1.0-51.el6"/>
+  <public publicId="-//OASIS//ELEMENTS DocBook XML Information Pool V4.4//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.4-1.0-51.el6/dbpoolx.mod"/>
+  <public publicId="-//OASIS//DTD DocBook XML V4.4//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.4-1.0-51.el6/docbookx.dtd"/>
+  <public publicId="-//OASIS//ENTITIES DocBook XML Character Entities V4.4//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.4-1.0-51.el6/dbcentx.mod"/>
+  <public publicId="-//OASIS//ENTITIES DocBook XML Notations V4.4//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.4-1.0-51.el6/dbnotnx.mod"/>
+  <public publicId="-//OASIS//ENTITIES DocBook XML Additional General Entities V4.4//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.4-1.0-51.el6/dbgenent.mod"/>
+  <public publicId="-//OASIS//ELEMENTS DocBook XML Document Hierarchy V4.4//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.4-1.0-51.el6/dbhierx.mod"/>
+  <public publicId="-//OASIS//DTD DocBook XML CALS Table Model V4.4//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.4-1.0-51.el6/calstblx.dtd"/>
+  <rewriteSystem systemIdStartString="http://www.oasis-open.org/docbook/xml/4.4" rewritePrefix="/usr/share/sgml/docbook/xml-dtd-4.4-1.0-51.el6"/>
+  <rewriteURI uriStartString="http://www.oasis-open.org/docbook/xml/4.4" rewritePrefix="/usr/share/sgml/docbook/xml-dtd-4.4-1.0-51.el6"/>
+  <public publicId="-//OASIS//ELEMENTS DocBook XML Information Pool V4.5//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.5-1.0-51.el6/dbpoolx.mod"/>
+  <public publicId="-//OASIS//DTD DocBook XML V4.5//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.5-1.0-51.el6/docbookx.dtd"/>
+  <public publicId="-//OASIS//ENTITIES DocBook XML Character Entities V4.5//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.5-1.0-51.el6/dbcentx.mod"/>
+  <public publicId="-//OASIS//ENTITIES DocBook XML Notations V4.5//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.5-1.0-51.el6/dbnotnx.mod"/>
+  <public publicId="-//OASIS//ENTITIES DocBook XML Additional General Entities V4.5//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.5-1.0-51.el6/dbgenent.mod"/>
+  <public publicId="-//OASIS//ELEMENTS DocBook XML Document Hierarchy V4.5//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.5-1.0-51.el6/dbhierx.mod"/>
+  <public publicId="-//OASIS//DTD DocBook XML CALS Table Model V4.5//EN" uri="/usr/share/sgml/docbook/xml-dtd-4.5-1.0-51.el6/calstblx.dtd"/>
+  <rewriteSystem systemIdStartString="http://www.oasis-open.org/docbook/xml/4.5" rewritePrefix="/usr/share/sgml/docbook/xml-dtd-4.5-1.0-51.el6"/>
+  <rewriteURI uriStartString="http://www.oasis-open.org/docbook/xml/4.5" rewritePrefix="/usr/share/sgml/docbook/xml-dtd-4.5-1.0-51.el6"/>
+</catalog>

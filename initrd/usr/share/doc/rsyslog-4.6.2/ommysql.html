@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta http-equiv="Content-Language" content="en">
+<title>MySQL Database Output Module</title>
+</head>
+
+<body>
+<a href="rsyslog_conf_modules.html">back</a>
+
+<h1>MySQL Database Output Module</h1>
+<p><b>Module Name:&nbsp;&nbsp;&nbsp; ommysql</b></p>
+<p><b>Author: </b>Michael Meckelein (Initial Author) / Rainer Gerhards
+&lt;rgerhards@adiscon.com&gt;</p>
+<p><b>Description</b>:</p>
+<p>This module provides native support for logging to MySQL databases. It offers
+superior performance over the more generic <a href="omlibdbi.html">omlibdbi</a> module.
+</p>
+<p><b>Configuration Directives</b>:</p>
+<p>ommysql mostly uses the "old style" configuration, with almost everything on the
+action line itself. A few newer features are being migrated to the new style-config
+directive configuration system.
+<ul>
+<li><b>$ActionOmmysqlServerPort &lt;port&gt;</b><br>Permits to select
+a non-standard port for the MySQL server. The default is 0, which means the
+system default port is used. There is no need to specify this directive unless
+you know the server is running on a non-standard listen port.
+<li>Action parameters:
+<br><b>:ommysql:database-server,database-name,database-userid,database-password</b>
+<br>All parameters should be filled in for a successful connect.
+</ul>
+<p>Note rsyslog contains a canned default template to write to the MySQL
+database. It works on the MonitorWare schema. This template is:
+<p>
+<textarea rows="5" cols="80">$template tpl,"insert into SystemEvents (Message, Facility, FromHost, Priority, DeviceReportedTime, ReceivedAt, InfoUnitID, SysLogTag) values ('%msg%', %syslogfacility%, '%HOSTNAME%', %syslogpriority%, '%timereported:::date-mysql%', '%timegenerated:::date-mysql%', %iut%, '%syslogtag%')",SQL
+</textarea>
+<p>As you can see, the template is an actual SQL statement. Note the ",SQL" option: it tells the
+template processor that the template is used for SQL processing, thus quote characters are quoted
+to prevent security issues. You can not assign a template without ",SQL" to a MySQL output action.
+<p>If you would like to change fields contents or add or delete your own fields, you
+can simply do so by modifying the schema (if required) and creating your own custom
+template.
+<p><b>Sample:</b></p>
+<p>The following sample writes all syslog messages to the
+database "syslog_db" on mysqlsever.example.com. The server is
+being accessed under the account of "user" with password "pwd".
+</p>
+<textarea rows="5" cols="80">$ModLoad ommysql
+$ActionOmmysqlServerPort 1234 # use non-standard port
+*.*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :ommysql:mysqlserver.example.com,syslog_db,user,pwd
+</textarea>
+<p>[<a href="rsyslog_conf.html">rsyslog.conf overview</a>]
+[<a href="manual.html">manual index</a>] [<a href="http://www.rsyslog.com/">rsyslog site</a>]</p>
+<p><font size="2">This documentation is part of the
+<a href="http://www.rsyslog.com/">rsyslog</a>
+project.<br>
+Copyright &copy; 2008, 2009 by <a href="http://www.gerhards.net/rainer">Rainer Gerhards</a> and
+<a href="http://www.adiscon.com/">Adiscon</a>.
+Released under the GNU GPL version 3 or higher.</font></p>
+</body></html>

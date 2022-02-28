@@ -1,0 +1,55 @@
+#!/bin/sh
+#
+# ifdown-sit
+#
+#
+# Taken from:
+# (P) & (C) 2000-2003 by Peter Bieringer <pb@bieringer.de>
+#
+#  You will find more information on the initscripts-ipv6 homepage at
+#   http://www.deepspace6.net/projects/initscripts-ipv6.html
+#
+# RHL integration assistance by Pekka Savola <pekkas@netcore.fi>
+#
+# Version 2002-11-01
+#
+# Uses following information from /etc/sysconfig/network-scripts/ifcfg-$1:
+#  DEVICE=<device>
+#
+
+
+. /etc/sysconfig/network
+
+cd /etc/sysconfig/network-scripts
+. ./network-functions
+
+CONFIG=$1
+[ -f "$CONFIG" ] || CONFIG=ifcfg-$CONFIG
+source_config
+
+# IPv6 don't need aliases anymore, config is skipped
+REALDEVICE=$(echo ${DEVICE} | sed 's/:.*//g')
+[ "$DEVICE" != "$REALDEVICE" ] && exit 0
+
+[ -f /etc/sysconfig/network-scripts/network-functions-ipv6 ] || exit 1
+. /etc/sysconfig/network-scripts/network-functions-ipv6
+
+
+# Generic tunnel device sit0 is not supported here
+if [ "$DEVICE" = "sit0" ]; then
+	net_log $"Device '$DEVICE' isn't supported here, use IPV6_AUTOTUNNEL setting and restart (IPv6) networking"
+	exit 1
+fi
+
+# IPv6 test, no module loaded, exit if system is not IPv6-ready
+ipv6_test testonly || exit 0
+
+# Test device status
+ipv6_test_device_status $DEVICE
+if [ $? != 0 -a $? != 11 ]; then
+	# device doesn't exist or other problem occurs
+	exit 0
+fi
+
+# Cleanup and shut down IPv6-in-IPv4 tunnel device
+ipv6_del_tunnel_device $DEVICE

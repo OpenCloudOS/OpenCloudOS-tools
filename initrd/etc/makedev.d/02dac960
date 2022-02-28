@@ -1,0 +1,16 @@
+b $STORAGE              48 0    1 256 rd/c0d%d%|p%d 0 8
+b $STORAGE              49 0    1 256 rd/c1d%d%|p%d 0 8
+b $STORAGE              50 0    1 256 rd/c2d%d%|p%d 0 8
+b $STORAGE              51 0    1 256 rd/c3d%d%|p%d 0 8
+b $STORAGE              52 0    1 256 rd/c4d%d%|p%d 0 8
+b $STORAGE              53 0    1 256 rd/c5d%d%|p%d 0 8
+b $STORAGE              54 0    1 256 rd/c6d%d%|p%d 0 8
+b $STORAGE              55 0    1 256 rd/c7d%d%|p%d 0 8
+b $STORAGE             136 0    1 256 rd/c8d%d%|p%d 0 8
+b $STORAGE             137 0    1 256 rd/c9d%d%|p%d 0 8
+b $STORAGE             138 0    1 256 rd/c10d%d%|p%d 0 8
+b $STORAGE             139 0    1 256 rd/c11d%d%|p%d 0 8
+b $STORAGE             140 0    1 256 rd/c12d%d%|p%d 0 8
+b $STORAGE             141 0    1 256 rd/c13d%d%|p%d 0 8
+b $STORAGE             142 0    1 256 rd/c14d%d%|p%d 0 8
+b $STORAGE             143 0    1 256 rd/c15d%d%|p%d 0 8

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deviceinfo version="0.2">
+  <device>
+
+    <!-- Some SanDisk USB sticks expose an extra LUN that is, I suppose, used for
+	 Windows drivers (Geez, guys, thanks a lot.). Ignore this. RH #208512 -->
+    <match key="storage.bus" string="usb">
+      <match key="storage.drive_type" string="cdrom">
+	<match key="storage.lun" int="1">
+          <match key="storage.vendor" string="SanDisk">
+            <match key="storage.model" string="Cruzer">
+	      <merge key="info.ignore" type="bool">true</merge>
+	    </match>
+            <match key="storage.model" string="U3 Cruzer Micro">
+	      <merge key="info.ignore" type="bool">true</merge>
+	    </match>
+	    <match key="storage.model" string="U3 Titanium">
+	      <merge key="info.ignore" type="bool">true</merge>
+	    </match>
+	  </match>
+	  <match key="storage.vendor" string="Intuix">
+            <match key="storage.model" string="U3">
+              <merge key="info.ignore" type="bool">true</merge>
+            </match>
+          </match>
+	</match>
+      </match>
+     <!-- some usb sticks don't like polling -->
+     <match key="@storage.originating_device:usb.vendor_id" int="0x054c">
+       <match key="@storage.originating_device:usb.product_id" int="0x008b">
+         <merge key="storage.media_check_enabled" type="bool">false</merge>
+       </match>
+     </match>
+     <match key="@storage.originating_device:usb.vendor_id" int="0x67b">
+       <match key="@storage.originating_device:usb.product_id" int="0x2317">
+         <merge key="storage.media_check_enabled" type="bool">false</merge>
+       </match>
+     </match>
+     <!-- Ignore the Huawei E220 USB HSDPA modem -->
+     <match key="@storage.originating_device:usb.vendor_id" int="0x12d1">
+       <match key="@storage.originating_device:usb.product_id" int="0x1003">
+         <merge key="info.ignore" type="bool">true</merge>
+       </match>
+     </match>
+
+     <!-- Ignore the system partition on the Samsung YP S5 music player; the
+          first one is the interesting one with the music, etc. LP #332913 -->
+     <match key="@info.parent:storage.vendor" contains="Samsung">
+       <match key="@info.parent:storage.model" contains="YP-S5">
+         <match key="volume.label" string="S5">
+           <match key="volume.partition.number" int="2">
+             <merge key="volume.ignore" type="bool">true</merge>
+           </match>
+         </match>
+       </match>
+     </match>
+   </match>
+  </device>
+</deviceinfo>

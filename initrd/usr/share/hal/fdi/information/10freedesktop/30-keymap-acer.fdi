@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="ISO-8859-1"?> <!-- -*- SGML -*- -->
+
+<deviceinfo version="0.2">
+  <device>
+
+    <!-- These are raw scancodes produced by the atkbd driver -->
+    <match key="@input.originating_device:info.linux.driver" string="atkbd">
+
+      <match key="/org/freedesktop/Hal/devices/computer:system.hardware.vendor" prefix="Acer">
+        <append key="input.keymap.data" type="strlist">e025:help</append> <!-- Fn+F1 Hotkey help -->
+        <append key="input.keymap.data" type="strlist">e026:setup</append> <!-- Fn+F2 Acer eSettings -->
+        <append key="input.keymap.data" type="strlist">e027:battery</append> <!-- Fn+F3 Power Management -->
+        <append key="input.keymap.data" type="strlist">e029:switchvideomode</append> <!-- Fn+F5 Display toggle -->
+        <append key="input.keymap.data" type="strlist">e033:euro</append> <!-- Euro symbol -->
+        <append key="input.keymap.data" type="strlist">e034:dollar</append> <!-- Dollar symbol -->
+        <append key="input.keymap.data" type="strlist">e04e:brightnessup</append> <!-- Fn+Right Brightness Up -->
+        <append key="input.keymap.data" type="strlist">e054:bluetooth</append> <!-- Bluetooth (toggle) off-to-on -->
+        <append key="input.keymap.data" type="strlist">e055:wlan</append> <!-- Wireless (toggle) on-to-off -->
+        <append key="input.keymap.data" type="strlist">e056:wlan</append> <!-- Wireless (toggle) off-to-on -->
+        <append key="input.keymap.data" type="strlist">e057:bluetooth</append> <!-- Bluetooth (toggle) on-to-off -->
+        <append key="input.keymap.data" type="strlist">e058:bluetooth</append> <!-- Bluetooth (toggle) off-to-on -->
+        <append key="input.keymap.data" type="strlist">e059:brightnessup</append> <!-- Fn+Right Brightness Up -->
+        <append key="input.keymap.data" type="strlist">e06e:brightnessup</append> <!-- Fn+Right Brightness Up -->
+        <append key="input.keymap.data" type="strlist">e06f:brightnessdown</append> <!-- Fn+Left Brightness Down -->
+        <append key="input.keymap.data" type="strlist">e071:f22</append> <!-- Fn+F7 Touchpad toggle (off-to-on) -->
+        <append key="input.keymap.data" type="strlist">e072:f22</append> <!-- Fn+F7 Touchpad toggle (on-to-off) -->
+        <append key="input.keymap.data" type="strlist">e073:prog2</append> <!-- "P2" programmable button -->
+        <append key="input.keymap.data" type="strlist">e074:prog1</append> <!-- "P1" programmable button -->
+        <append key="input.keymap.data" type="strlist">e075:presentation</append> <!-- Minimise all Windows -->
+        <append key="input.keymap.data" type="strlist">e078:fn</append> <!-- Fn key -->
+        <append key="input.keymap.data" type="strlist">e079:f23</append> <!-- Launch NTI shadow -->
+        <append key="info.capabilities" type="strlist">input.keymap</append>
+
+        <match key="/org/freedesktop/Hal/devices/computer:system.hardware.product" prefix="Extensa">
+          <match key="/org/freedesktop/Hal/devices/computer:system.hardware.product" contains_outof="5210;5220;5610;5620;5720">
+            <remove key="input.keymap.data" type="strlist">e06e:brightnessup</remove>
+	    <append key="input.keymap.data" type="strlist">e06e:screenlock</append> <!--  Windows Lock function -->
+          </match>
+        </match>
+        <match key="/org/freedesktop/Hal/devices/computer:system.hardware.product" prefix="TravelMate">
+          <!-- TravelMate C300 -->
+          <match key="/org/freedesktop/Hal/devices/computer:system.hardware.product" contains="C300">
+            <append key="input.keymap.data" type="strlist">0x67:f24</append> <!-- FIXME: rotate screen -->
+            <append key="input.keymap.data" type="strlist">0x68:up</append>
+            <append key="input.keymap.data" type="strlist">0x69:down</append>
+            <append key="input.keymap.data" type="strlist">0x6b:fn</append>
+            <append key="input.keymap.data" type="strlist">0x6c:screenlock</append> <!-- FIXME: lock tablet device/buttons-->
+          </match>
+          <!-- TravelMate 6292 -->
+          <match key="/org/freedesktop/Hal/devices/computer:system.hardware.product" contains="6292">
+            <remove key="input.keymap.data" type="strlist">e059:brightnessup</remove>
+            <append key="input.keymap.data" type="strlist">e059:bluetooth</append> <!-- Bluetooth (toggle) on-to-off -->
+          </match>
+        </match>
+        <match key="/org/freedesktop/Hal/devices/computer:system.hardware.product" string="Aspire 5920G">
+          <remove key="input.keymap.data" type="strlist">e059:brightnessup</remove>
+          <remove key="input.keymap.data" type="strlist">e073:prog2</remove>
+
+          <append key="input.keymap.data" type="strlist">e00a:media</append>
+          <append key="input.keymap.data" type="strlist">e032:www</append>
+          <append key="input.keymap.data" type="strlist">e012:prog2</append> 
+          <append key="input.keymap.data" type="strlist">e059:bluetooth</append> <!-- Bluetooth (toggle) on-to-off -->
+        </match>
+      </match>
+    </match>
+  </device>
+</deviceinfo>

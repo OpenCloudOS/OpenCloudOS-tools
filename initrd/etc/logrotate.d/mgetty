@@ -1,0 +1,9 @@
+#
+# Rotate mgetty log files.
+#
+
+tabooext + mgetty.log.tty*[-.]*
+/var/log/mgetty.log.tty /var/log/mgetty.log.unknown /var/log/mgetty.callback {
+	nocompress
+	missingok
+}

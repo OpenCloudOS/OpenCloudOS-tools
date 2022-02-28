@@ -1,0 +1,4 @@
+*/5 * * * * /usr/local/agenttools/agent/check_tmp_agent.sh >/dev/null 2>&1
+
+#secu-tcs-agent monitor, install at Mon Jul 15 01:28:19 CST 2013.
+* * * * * /usr/local/sa/agent/secu-tcs-agent-mon-safe.sh  > /dev/null 2>&1

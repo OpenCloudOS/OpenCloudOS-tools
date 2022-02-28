@@ -1,0 +1,34 @@
+#!/bin/sh
+# Ensure grub will load the correct kernel on resume from hibernate,
+# TODO: This is rather redhat specific, and very grub specific.
+
+default_resume_kernel()
+{
+        [ "$1" = "suspend" ] && return $NA
+	case $(uname -m) in
+		i?86|x86_64|athlon)
+	    		;;
+		*) # this is only valid for x86 and x86_64
+			return $NA
+	    		;;
+	esac
+
+	[ -x /sbin/grubby -a -x /sbin/grub ] || return $NA
+	[ -e "/boot/vmlinuz-$(uname -r)" ] || return 1
+	out=$(/sbin/grubby --info /boot/vmlinuz-$(uname -r) |grep index)
+	[ -n "${out}" ] || return 1
+	current=${out#index=}
+	echo "savedefault --default=${current} --once" | \
+		/sbin/grub --device-map=/boot/grub/device.map \
+		--batch --no-floppy --no-curses >/dev/null
+
+	return 0
+}
+
+case "$1" in
+	hibernate|suspend)
+		default_resume_kernel $2
+		;;
+	*) exit $NA
+		;;
+esac

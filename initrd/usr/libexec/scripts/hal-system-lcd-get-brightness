@@ -1,0 +1,21 @@
+#!/bin/sh
+#
+# Copyright (C) 2005 Richard Hughes <richard@hughsie.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
+. hal-functions
+
+# Check for environment variables
+if [ -z "$HAL_PROP_LAPTOP_PANEL_ACCESS_METHOD" -a -z "$HAL_PROP_LINUX_SYSFS_PATH" ]; then
+        echo "org.freedesktop.Hal.Device.UnknownError" >&2
+	echo "Missing or empty environment variable(s)." >&2
+	echo "This script should be started by hald." >&2
+	exit 1
+fi
+
+hal_check_priv org.freedesktop.hal.power-management.lcd-panel
+hal_exec_backend

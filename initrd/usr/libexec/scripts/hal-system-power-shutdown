@@ -1,0 +1,11 @@
+#!/bin/sh
+
+. hal-functions
+
+if [ "$CK_NUM_SESSIONS" -gt "1" ] ; then
+    hal_check_priv org.freedesktop.hal.power-management.shutdown-multiple-sessions
+else
+    hal_check_priv org.freedesktop.hal.power-management.shutdown
+fi
+
+hal_exec_backend

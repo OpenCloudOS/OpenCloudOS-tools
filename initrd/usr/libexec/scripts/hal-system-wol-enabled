@@ -1,0 +1,20 @@
+#!/bin/bash
+#
+# Copyright (C) 2007 Holger Macht <holger@homac.de>
+#
+# Author: Holger Macht <holger@homac.de>
+#
+# This file is released under the GPLv2.
+#
+
+. hal-functions
+
+if [ -z "$UDI" -o -z "$HAL_PROP_NET_INTERFACE" ]; then
+    echo "org.freedesktop.Hal.Device.WakeOnLAN.UnknownError" >&2
+    echo "Missing or empty environment variable(s)." >&2
+    echo "This script should be started by hald." >&2
+    exit 1
+fi
+
+hal_check_priv org.freedesktop.hal.wol.enabled
+hal_exec_backend

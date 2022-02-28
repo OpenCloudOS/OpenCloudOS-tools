@@ -1,0 +1,36 @@
+#! /bin/bash
+#
+# Author: tlinux team <t_os@tencent.com>
+#
+### BEGIN INIT INFO
+# Provides: netirqaffinity
+# Required-Start: $network
+# Required-Stop: 
+# Should-Start: irqbalance
+# Should-Stop: 
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Description: setting up irq affinity according to /proc/interrupts
+### END INIT INFO
+
+start()
+{
+	if [ ! -x /usr/sbin/set_irq_affinity.sh ]; then 
+                echo "/usr/sbin/set_irq_affinity.sh is not exit!"
+                exit 1  
+        fi      
+        mutiqueue=`ls -d /proc/irq/*/eth* | grep eth.*-.*1`
+        if [ -n "${mutiqueue}" ]; then 
+                /usr/sbin/set_irq_affinity.sh
+        fi	
+}
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		;;
+	restart)
+		start	
+		;;
+esac

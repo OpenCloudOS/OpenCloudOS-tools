@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Copyright (C) 2005 W. Michael Petullo <mike@flyn.org>
+# Copyright (C) 2006 David Zeuthen <davidz@redhat.com>
+# 
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2.
+
+read PASSWORD 
+
+CRYPTSETUP=/sbin/cryptsetup
+
+if [ ! -f $CRYPTSETUP ]; then
+    echo org.freedesktop.Hal.Device.Volume.Crypto.CryptSetupMissing >&2
+    echo Error setting up $HAL_PROP_BLOCK_DEVICE - $CRYPTSETUP not found >&2
+    exit 1
+fi
+
+if [ -e /dev/mapper/luks_crypto_$HAL_PROP_VOLUME_UUID ]; then
+    echo org.freedesktop.Hal.Device.Volume.Crypto.SetupError >&2
+    echo $HAL_PROP_BLOCK_DEVICE is already setup? >&2
+    exit 1
+fi
+
+if ! echo "$PASSWORD" | $CRYPTSETUP luksOpen $HAL_PROP_BLOCK_DEVICE luks_crypto_$HAL_PROP_VOLUME_UUID  2> /dev/null; then
+    echo org.freedesktop.Hal.Device.Volume.Crypto.SetupPasswordError >&2
+    echo Error setting up $HAL_PROP_BLOCK_DEVICE - bad password? >&2
+    exit 1
+fi
+
+hal-set-property --udi=$UDI --key="info.callouts.remove" --strlist-pre="hal-luks-remove" > /dev/null 2>&1
+
+exit 0

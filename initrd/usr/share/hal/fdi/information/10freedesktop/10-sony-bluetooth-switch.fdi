@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deviceinfo version="0.2">
+
+  <device>
+    <match key="system.kernel.name" string="Linux">
+      <match key="system.hardware.vendor" string="Sony Corporation">
+        <match key="system.formfactor" string="laptop">
+	  <match key="system.product" contains="VGN-S1XP">
+            <spawn udi="/org/freedesktop/Hal/devices/sonypic_bluetooth_switch"/>
+	  </match>
+	  <!-- FIXME add more laptops here -->
+        </match>
+      </match>
+    </match>
+  </device>
+
+  <device>
+    <match key="info.udi" string="/org/freedesktop/Hal/devices/sonypic_bluetooth_switch">
+      <addset key="info.capabilities" type="strlist">killswitch</addset>
+      <merge key="info.category" type="string">killswitch</merge>
+      <merge key="info.product" type="string">Sony Bluetooth Switch</merge>
+      <merge key="killswitch.type" type="string">bluetooth</merge>
+      <merge key="killswitch.access_method" type="string">sonypic</merge>
+
+      <match key="@info.parent:system.product" contains="VGN-S1XP">
+        <merge key="killswitch.expected_usb_vendor_id" type="int">0x44e</merge>
+        <merge key="killswitch.expected_usb_product_id" type="int">0x3007</merge>
+      </match>
+
+      <!-- FIXME add more laptops here -->
+    </match>
+  </device>
+
+</deviceinfo>

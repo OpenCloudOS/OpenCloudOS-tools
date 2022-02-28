@@ -1,0 +1,70 @@
+#!/bin/bash
+# configure 70-persistent-net.rules for tlinux2.x joeytao 20160524
+/tos/tlog -m "configure 70-persistent-net.rules start"
+mntdir="/mnt/harddisk/root"
+mount /dev/sda1 $mntdir
+
+IF_ETH0="$mntdir/etc/sysconfig/network-scripts/ifcfg-eth0"
+IF_ETH1="$mntdir/etc/sysconfig/network-scripts/ifcfg-eth1"
+
+ETH1MAC=$(ifconfig | egrep "inet addr:10|inet addr:192" -B1 | grep HWaddr | head -1 | awk '{print $5}' )
+ETH0MAC=$(ifconfig -a | grep HWaddr | grep -v $ETH1MAC | head -1 | awk '{print $5}')
+if_eth2_10000=`ethtool eth2 | grep "Advertised link modes" -A3 | grep "10000"`
+if_eth3_10000=`ethtool eth3 | grep "Advertised link modes" -A3 | grep "10000"`
+if [[ $if_eth2_10000 -eq 1 ]] && [[ $if_eth3_10000 -eq 1 ]];then
+        ETH0MAC=$(ifconfig -a | grep HWaddr | egrep "eth2|eth3" | grep -v $ETH1MAC | head -1 | awk '{print $5}')
+fi
+ETH1MAC=$(echo $ETH1MAC | tr A-Z a-z)
+ETH0MAC=$(echo $ETH0MAC | tr A-Z a-z)
+
+sed -i "s/HWADDR=[^ ]*/HWADDR=${ETH1MAC}/" ${IF_ETH1}
+sed -i "s/HWADDR=[^ ]*/HWADDR=${ETH0MAC}/" ${IF_ETH0}
+
+ifconfig -a | grep HWaddr > /tmp/HWaddr.tmp
+NIC_NUM=$(ifconfig -a | grep HWaddr | awk '{print $5}' | sort  | uniq | wc -l)
+if [[ ${NIC_NUM} -eq 4 ]];then
+	/tos/tlog -m "This Server has 4 NIC"
+	cat /tmp/HWaddr.tmp | egrep -i -v "${ETH1MAC}|${ETH0MAC}" > /tmp/HWaddr.tmp2
+        ETH2MAC=`cat /tmp/HWaddr.tmp2 | awk '{print $5}' | head -1`
+	ETH2MAC=$(echo $ETH2MAC | tr A-Z a-z)
+	ETH3MAC=`cat /tmp/HWaddr.tmp2 | awk '{print $5}' | egrep -i -v "${ETH2MAC}" | head -1`
+	ETH3MAC=$(echo $ETH3MAC | tr A-Z a-z)
+fi
+
+if [[ ${NIC_NUM} -eq 6 ]];then
+        /tos/tlog -m "This Server has 4 NIC"
+        cat /tmp/HWaddr.tmp | egrep -i -v "${ETH1MAC}|${ETH0MAC}" > /tmp/HWaddr.tmp2
+        ETH2MAC=`cat /tmp/HWaddr.tmp2 | awk '{print $5}' | head -1`
+        ETH2MAC=$(echo $ETH2MAC | tr A-Z a-z)
+        ETH3MAC=`cat /tmp/HWaddr.tmp2 | awk '{print $5}' | egrep -i -v "${ETH2MAC}" | head -1`
+        ETH3MAC=$(echo $ETH3MAC | tr A-Z a-z)
+        ETH4MAC=`cat /tmp/HWaddr.tmp2 | awk '{print $5}' | egrep -i -v "${ETH2MAC}|${ETH3MAC}" | head -1`
+        ETH4MAC=$(echo $ETH4MAC | tr A-Z a-z)
+        ETH5MAC=`cat /tmp/HWaddr.tmp2 | awk '{print $5}' | egrep -i -v "${ETH2MAC}|${ETH3MAC}|${ETH4MAC}" | head -1`
+        ETH5MAC=$(echo $ETH5MAC | tr A-Z a-z)
+fi
+
+RULE_FILE="$mntdir/etc/udev/rules.d/70-persistent-net.rules"
+	
+if [ "$ETH1MAC" != "" ] ; then
+	echo "SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"?*\", ATTR{address}==\"$ETH1MAC\", ATTR{type}==\"1\", KERNEL==\"eth*\", NAME=\"eth1\"" >> $RULE_FILE
+fi
+
+if [ "$ETH0MAC" != "" ] ; then
+        echo "SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"?*\", ATTR{address}==\"$ETH0MAC\", ATTR{type}==\"1\", KERNEL==\"eth*\", NAME=\"eth0\"" >> $RULE_FILE
+fi
+if [ "$ETH2MAC" != "" ] ; then
+        echo "SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"?*\", ATTR{address}==\"$ETH2MAC\", ATTR{type}==\"1\", KERNEL==\"eth*\", NAME=\"eth2\"" >> $RULE_FILE
+fi
+if [ "$ETH3MAC" != "" ] ; then
+        echo "SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"?*\", ATTR{address}==\"$ETH3MAC\", ATTR{type}==\"1\", KERNEL==\"eth*\", NAME=\"eth3\"" >> $RULE_FILE
+fi
+if [ "$ETH4MAC" != "" ] ; then
+        echo "SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"?*\", ATTR{address}==\"$ETH4MAC\", ATTR{type}==\"1\", KERNEL==\"eth*\", NAME=\"eth4\"" >> $RULE_FILE
+fi
+if [ "$ETH5MAC" != "" ] ; then
+        echo "SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"?*\", ATTR{address}==\"$ETH5MAC\", ATTR{type}==\"1\", KERNEL==\"eth*\", NAME=\"eth5\"" >> $RULE_FILE
+fi
+
+umount $mntdir
+/tos/tlog -m "configure 70-persistent-net.rules done"

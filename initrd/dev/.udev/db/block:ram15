@@ -1,0 +1,4 @@
+N:ram15
+S:block/1:15
+W:20
+E:MPATH_SBIN_PATH=/sbin

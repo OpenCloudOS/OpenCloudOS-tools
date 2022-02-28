@@ -1,0 +1,74 @@
+<!-- Document Type for FreeDesktop.org Device Information Files -->
+
+<!-- <deviceinfo> is the top-level element of an fdi file. -->
+<!ELEMENT deviceinfo (device*) >
+<!ATTLIST deviceinfo 
+    version (0.1|0.2) #REQUIRED
+>
+
+<!ELEMENT device (match|merge)*  >
+
+<!ELEMENT match (match|merge|prepend|append|addset|remove|spawn)* >
+<!ATTLIST match 
+    key              CDATA #REQUIRED
+    string           CDATA #IMPLIED
+    string_outof     CDATA #IMPLIED
+    int              CDATA #IMPLIED
+    int_outof        CDATA #IMPLIED
+    uint64           CDATA #IMPLIED
+    bool             (false|true) #IMPLIED
+    exists           (false|true) #IMPLIED
+    empty            (false|true) #IMPLIED
+    is_ascii         (false|true) #IMPLIED
+    is_absolute_path (false|true) #IMPLIED
+    contains         CDATA #IMPLIED
+    contains_ncase   CDATA #IMPLIED
+    contains_not     CDATA #IMPLIED
+    contains_outof   CDATA #IMPLIED
+    prefix           CDATA #IMPLIED
+    prefix_ncase     CDATA #IMPLIED
+    prefix_outof     CDATA #IMPLIED
+    suffix           CDATA #IMPLIED
+    suffix_ncase     CDATA #IMPLIED
+    compare_lt       CDATA #IMPLIED
+    compare_le       CDATA #IMPLIED
+    compare_gt       CDATA #IMPLIED
+    compare_ge       CDATA #IMPLIED
+    compare_ne       CDATA #IMPLIED
+    sibling_contains CDATA #IMPLIED
+>
+
+<!ELEMENT merge (#PCDATA) >
+<!ATTLIST merge 
+    key    CDATA #REQUIRED
+    type   (string|int|uint64|bool|double|strlist|copy_property) #REQUIRED
+>
+
+<!ELEMENT prepend (#PCDATA) >
+<!ATTLIST prepend 
+    key    CDATA #REQUIRED
+    type   (string|strlist|int|bool|double|copy_property) #REQUIRED
+>
+
+<!ELEMENT append (#PCDATA) >
+<!ATTLIST append 
+    key    CDATA #REQUIRED
+    type   (string|strlist|int|bool|double|copy_property) #REQUIRED
+>
+
+<!ELEMENT addset (#PCDATA) >
+<!ATTLIST addset 
+    key    CDATA #REQUIRED
+    type   (string|strlist|int|bool|double|copy_property) #REQUIRED
+>
+
+<!ELEMENT remove (#PCDATA) >
+<!ATTLIST remove
+    key    CDATA #REQUIRED
+    type   (strlist) #IMPLIED
+>
+
+<!ELEMENT spawn (#PCDATA) >
+<!ATTLIST spawn
+    udi    CDATA #REQUIRED
+>

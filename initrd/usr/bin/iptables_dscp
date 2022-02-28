@@ -1,0 +1,280 @@
+#!/bin/bash - 
+# ===============================================================================
+#          File:  iptables_dscp.sh
+#   Description:  Only to set dscp value in IP header using iptables.
+#                 And check if setting is OK.
+#        Author:  David Shan <davidshan@tencent.com>
+#       Created:  10/28/2011 
+#      Revision: 
+#                v1.2: Must not to tag dscp value on tlinux-1.0.0. 
+#                v1.1: Query dscp value from iptable rules using iptables-save,
+#                       not using "iptables -S" which is not supported by v1.3.5.
+# ===============================================================================
+
+protocol_type="all"
+source_ip=""
+local_port=""
+remote_port=""
+destination_ip=""
+out_interface=""
+is_validate="0"
+dscp_value=""
+matched_dscp_value=""
+tmp_iptables_saved_file="/tmp/iptables_saved_rules.txt"
+kernel_version=""
+
+usage()
+{
+
+	echo "iptables_dscp -p \$protocol      -s  \$source_ip      -l \$local_port " 
+	echo "              -r \$remote_port   -d  \$destination_ip " 
+	echo "              -o \$out_interface [-v] DSCP_Value "
+
+	echo ""
+	echo "              -v: use to check if dscp configure is succeed."
+	echo "                  with this option, not to set dscp value."
+	
+}
+
+get_dscp_value()
+{
+	local arg_protocol_type=""
+	local arg_source_ip=""
+	local arg_destination_ip=""
+	local arg_out_interface=""
+	local arg_local_port=""
+	local arg_remote_port=""
+
+	if [  "$protocol_type" != "all" ]; then
+		arg_protocol_type="\-p ${protocol_type}"
+	fi
+
+	if [ -n "$source_ip" ]; then
+		arg_source_ip="\-s ${source_ip}"
+	fi
+
+	if [ -n "$destination_ip" ]; then
+		arg_destination_ip="\-d ${destination_ip}"
+	fi
+
+	if [ -n "$out_interface" ]; then
+		arg_out_interface="\-o ${out_interface}"
+	fi
+
+	if [ -n "$local_port" ]; then
+		arg_local_port="\--sport ${local_port}"
+	fi
+
+	if [ -n "$remote_port" ]; then
+		arg_remote_port="\--dport ${remote_port}"
+	fi
+	iptables-save > $tmp_iptables_saved_file
+	
+	match_counter=`cat $tmp_iptables_saved_file | grep POSTROUTING | grep "\-j DSCP \--set-dscp"\
+	   | grep "$arg_protocol_type" | grep "$arg_source_ip"\
+	   | grep "$arg_destination_ip" | grep "$arg_out_interface"\
+	   | grep "$arg_local_port" | grep "$arg_remote_port" | wc -l`
+
+	
+	if [ "$match_counter" -eq 0 ];then
+		echo "Error: No iptables rules matched."
+		exit 1
+	fi
+
+	if [ "$match_counter" -ne 1 ];then
+		echo "Error: Match multi iptables rules, please check your parameter."
+		echo ""
+
+		echo "iptables rules is below:"
+		cat $tmp_iptables_saved_file | grep POSTROUTING | grep "\-j DSCP \--set-dscp"\
+			| grep "$arg_protocol_type" | grep "$arg_source_ip"\
+			| grep "$arg_destination_ip" | grep "$arg_out_interface"\
+			| grep "$arg_local_port" | grep "$arg_remote_port"
+		exit 1
+	fi
+
+	matched_dscp_value=`cat $tmp_iptables_saved_file | grep POSTROUTING | grep "\-j DSCP \--set-dscp"\
+	   | grep "$arg_protocol_type" | grep "$arg_source_ip"\
+	   | grep "$arg_destination_ip" | grep "$arg_out_interface"\
+	   | grep "$arg_local_port" | grep "$arg_remote_port"\
+	   | awk -F" " '{ print $NF }'`
+
+	return 0
+}
+
+validate_captured_packets()
+{
+	local dscp_value="$1"
+	local arg_protocol_type=""
+	local arg_source_ip=""
+	local arg_destination_ip=""
+	local arg_out_interface=""
+	local arg_local_port=""
+	local arg_remote_port=""
+
+	if [  "$protocol_type" != "all" ]; then
+		arg_protocol_type="${protocol_type}"
+	fi
+
+	if [ -n "$source_ip" ]; then
+		arg_source_ip="and src host ${source_ip}"
+	fi
+
+	if [ -n "$destination_ip" ]; then
+		arg_destination_ip="and dst host ${destination_ip}"
+	fi
+
+	if [ -n "$out_interface" ]; then
+		arg_out_interface="-i ${out_interface}"
+	fi
+
+	if [ -n "$local_port" ]; then
+		arg_local_port="and src port ${local_port}"
+	fi
+
+	if [ -n "$remote_port" ]; then
+		arg_remote_port="and dst port ${remote_port}"
+	fi
+
+	echo "Capture packets with below command:"
+	echo "tcpdump -nn -v -c 1 $arg_out_interface $arg_protocol_type $arg_source_ip $arg_destination_ip $arg_local_port $arg_remote_port"
+
+	tcpdump $arg_out_interface $arg_protocol_type $arg_source_ip\
+	        $arg_destination_ip $arg_local_port $arg_remote_port\
+		-nn -v -c 1 | tee /tmp/.tmp_captured_packet.txt
+
+	tos_value=`cat /tmp/.tmp_captured_packet.txt | grep IP | grep tos\
+			| awk -F" " '{ print $4 }'`
+
+	unlink /tmp/.tmp_captured_packet.txt
+	tos_value=${tos_value%%,}
+
+	#dscp is high 6 bit of tos in IP header.
+	let "tos_value >>= 2"
+
+	if [[ "$tos_value" -eq "$dscp_value" ]];then
+		echo ""
+		echo "Validate Result: OK"
+		unlink $tmp_iptables_saved_file
+		exit 0
+	else
+		echo ""
+		echo "Validate Result: FAIL"
+		unlink $tmp_iptables_saved_file
+		exit 1
+	fi
+	
+}
+
+set_dscp_value()
+{
+
+	iptables_args="-A POSTROUTING -t mangle -p ${protocol_type}"
+	if [ -n "$source_ip" ]; then
+		iptables_args="$iptables_args  -s ${source_ip}"
+	fi
+
+	if [ -n "$destination_ip" ]; then
+		iptables_args="$iptables_args -d ${destination_ip}"
+	fi
+
+	if [ -n "$out_interface" ]; then
+		iptables_args="$iptables_args -o ${out_interface}"
+	fi
+
+	if [ -n "$local_port" ]; then
+		iptables_args="$iptables_args --sport ${local_port}"
+	fi
+
+	if [ -n "$remote_port" ]; then
+		iptables_args="$iptables_args --dport ${remote_port}"
+	fi
+	echo "Set dscp value with command:"
+	echo "iptables $iptables_args  -j DSCP --set-dscp $dscp_value"
+
+	iptables $iptables_args  -j DSCP --set-dscp "$dscp_value"
+}
+
+
+validate_dscp_setting()
+{
+	get_dscp_value
+	if [ -z $matched_dscp_value ];then
+		echo "Error: Failed to get dscp value."
+		exit 1
+	fi
+	
+	validate_captured_packets $matched_dscp_value
+}
+
+#Skip tlinux-1.0.0
+kernel_version=`uname -r | grep "tlinux-1.0.0"`
+if [ -n "$kernel_version" ];then
+	echo "FAIL: tag dscp value on tlinux-1.0.0 will trigger kernel bug."
+	echo "      Suggest you to update your kernel version."
+	exit 1
+fi
+
+
+#Parse Parameters
+while getopts ":p:s:l:r:d:o:vi:h" option "$@"
+do
+	case $option in 
+	"p" )
+		protocol_type=$OPTARG
+		;;
+	"s" )  
+		source_ip=$OPTARG
+		;;
+	"l" )  
+		local_port=$OPTARG
+		;;
+	"r" )  
+		remote_port=$OPTARG
+		;;
+	"d" )  
+		destination_ip=$OPTARG
+		;;
+	"o" )  
+		out_interface=$OPTARG
+		;;
+	"v" )  
+		is_validate=1
+		;;
+	"h" )  
+		usage
+		exit 0
+		;;
+	"?" )  
+		usage
+		exit 1
+		;;
+	esac
+done
+
+shift $(($OPTIND - 1))
+dscp_value=$1
+
+#Check Parameters (IP address)
+if [[ ( "$protocol_type" == "all" ) && ( -n "$local_port" || -n "$remote_port") ]];then
+	echo "Error: Protocol is not set, but you are using local_port/remote_port!"
+	usage
+	exit 1
+fi
+
+if [[ ( "$is_validate" -eq 1 && -n "$dscp_value" ) ||
+      ( "$is_validate" -eq 0 && -z "$dscp_value" ) ]];then
+	echo "Error: '-v' is used with DSCP_Value setting!"
+	usage
+	exit 1
+fi
+
+#Set DSCP value using iptables
+if [ $is_validate -eq 1 ]; then
+	validate_dscp_setting
+else
+	set_dscp_value
+fi
+
+exit 0
+

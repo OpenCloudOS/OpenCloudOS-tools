@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deviceinfo version="0.2">
+
+  <device>
+    <match key="info.capabilities" contains="killswitch">
+      <!-- For IPW WLAN devices we have an own addon -->
+      <match key="killswitch.access_method" string="ipw">
+	<append key="info.addons" type="strlist">hald-addon-ipw-killswitch</append>
+      </match>
+
+      <match key="killswitch.access_method" string="rfkill">
+	<append key="info.addons.singleton" type="strlist">hald-addon-rfkill-killswitch</append>
+      </match>
+
+      <!-- For all other KillSwitch devices -->
+      <match key="killswitch.access_method" contains_not="ipw">
+        <match key="info.subsystem" contains_not="rfkill">
+          <append key="info.interfaces" type="strlist">org.freedesktop.Hal.Device.KillSwitch</append>
+          <append key="org.freedesktop.Hal.Device.KillSwitch.method_names" type="strlist">SetPower</append>
+          <append key="org.freedesktop.Hal.Device.KillSwitch.method_signatures" type="strlist">b</append>
+          <append key="org.freedesktop.Hal.Device.KillSwitch.method_argnames" type="strlist">power</append>
+          <append key="org.freedesktop.Hal.Device.KillSwitch.method_execpaths" type="strlist">hal-system-killswitch-set-power</append>
+
+          <append key="org.freedesktop.Hal.Device.KillSwitch.method_names" type="strlist">GetPower</append>
+          <append key="org.freedesktop.Hal.Device.KillSwitch.method_signatures" type="strlist"></append>
+          <append key="org.freedesktop.Hal.Device.KillSwitch.method_argnames" type="strlist"></append>
+          <append key="org.freedesktop.Hal.Device.KillSwitch.method_execpaths" type="strlist">hal-system-killswitch-get-power</append>
+        </match>
+      </match>
+
+    </match>
+  </device>
+
+</deviceinfo>

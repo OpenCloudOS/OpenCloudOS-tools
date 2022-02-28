@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # ===================================================
-# Copyright (c) [2021] [Tencent]
+# Copyright (c) [2022] [Tencent]
 # [OpenCloudOS Tools] is licensed under Mulan PSL v2.
 # You can use this software according to the terms and conditions of the Mulan PSL v2. 
 # You may obtain a copy of Mulan PSL v2 at:
@@ -15,31 +15,13 @@
 # author: g_CAPD_SRDC_OS@tencent.com
 #
 
-. /usr/lib/opencloudos-tools/tos-fix-dns.sh
 . /usr/lib/opencloudos-tools/tos-backup.sh
 . /usr/lib/opencloudos-tools/tos-analyze-performance.sh
-TOS_RELEASE="/etc/tlinux-release"
+TOS_RELEASE="/etc/opencloudos-release"
 KERNEL_VER=$(uname -r)
 TOS_VER_V=""
 TOS_VER=""
 TOS_DATE=""
-
-# check tlinux2
-is_tlinux2()
-{
-    [ ! -f $TOS_RELEASE ] && return 1
-    grep -q "Tencent tlinux release 2." $TOS_RELEASE || \
-        grep -q "Tencent Linux release 2." $TOS_RELEASE
-}
-
-#check tlinux
-is_tlinux()
-{
-    t_v=$1
-    [ ! -f $TOS_RELEASE ] && return 1
-    grep -q "Tencent tlinux release $t_v" $TOS_RELEASE || \
-        grep -q "Tencent Linux release $t_v" $TOS_RELEASE
-}
 
 #get tlinux version and date
 getVersionDate()
@@ -170,180 +152,11 @@ tos_install()
     fi
 }
 
-#tencentos fix yum problems, update tlinux-release rpm
-tos_fix_yum()
-{
-    tos_fix_dns
-    if [ $? -eq 0 ]; then
-        # dig mirrors.tencent.com
-        dig_result=$(/usr/bin/dig mirrors.tencent.com)
-        answer_section=$(echo $dig_result | grep "ANSWER SECTION:")
-        # if we have answer section
-        if [ "$answer_section" == "" ]; then
-            echo "The DNS can't resolve the domain of mirrors.tencent.com"
-            echo "Please configure DNS according to this page: http://mirrors.tencent.com/#/document/question "
-            return 1;
-        fi
-    fi
-    if is_tlinux 1.2 ; then
-        #tlinux1.2-kvm_guest
-        uname -r | grep -q "kvm_guest"
-        if [ $? -eq 0 ]; then
-            rpm -Uvh https://mirrors.tencent.com/tlinux/rpm/tlinux-release-kvm-guest-1.0-2.tl1.noarch.rpm
-            [ $? -ne 0 ] && rpm -ivh --force https://mirrors.tencent.com/tlinux/rpm/tlinux-release-kvm-guest-1.0-2.tl1.noarch.rpm
-        fi
-
-        result=$(rpm -q -V python)
-        if [ -n "$result" ]; then
-            echo "$result"
-            echo "python rpm is changed."
-            read -r -p "Would you like to reinstall the python rpm?[y/n]" input
-            case $input in
-                [yY][eE][sS]|[yY])
-                    echo "Reinstall python rpm"
-                    rpm -ivh --force https://mirrors.tencent.com/tlinux/1.2/os/x86_64/Packages/python-2.6.6-29.el6.x86_64.rpm
-                    ;;
-                [nN][oO]|[nN])
-                    echo "You choose no, exit"
-                    exit 0
-                    ;;
-                *)
-                    echo "Invalid input..."
-                    exit 1
-                    ;;
-            esac
-        fi
-
-        rpm -Uvh  https://mirrors.tencent.com/tlinux/rpm/epel-release-6-12.tl1.noarch.rpm
-        [ $? -ne 0 ] && rpm -ivh --force https://mirrors.tencent.com/tlinux/rpm/epel-release-6-12.tl1.noarch.rpm
-        rpm -Uvh  https://mirrors.tencent.com/tlinux/rpm/tlinux-release-1-11.tl1.x86_64.rpm
-        [ $? -ne 0 ] && rpm -ivh --force https://mirrors.tencent.com/tlinux/rpm/tlinux-release-1-11.tl1.x86_64.rpm
-        return $?
-    fi
-    if is_tlinux 2.0 ; then
-        result=$(rpm -q -V python)
-        if [ -n "$result" ]; then
-            echo "$result"
-            echo "python rpm is changed."
-            read -r -p "Would you like to reinstall the python rpm?[y/n]" input
-            case $input in
-                [yY][eE][sS]|[yY])
-                    echo "Reinstall python rpm"
-                    python_rpm=$(rpm -q python | grep x86_64)
-                    rpm -ivh --force https://mirrors.tencent.com/tlinux/2.0/os/x86_64/Packages/${python_rpm}.rpm
-                    rpm -ivh --force https://mirrors.tencent.com/tlinux/2.0/tlinux/x86_64/RPMS/${python_rpm}.rpm
-                    ;;
-                [nN][oO]|[nN])
-                    echo "You choose no, exit"
-                    exit 0
-                    ;;
-                *)
-                    echo "Invalid input..."
-                    exit 1
-                    ;;
-            esac
-        fi
-
-        rpm -Uvh https://mirrors.tencent.com/tlinux/rpm/tlinux-release-2-4.tl2.x86_64.rpm
-        [ $? -ne 0 ] && rpm -ivh --force https://mirrors.tencent.com/tlinux/rpm/tlinux-release-2-4.tl2.x86_64.rpm
-        return $?
-    fi
-    if is_tlinux 2.2 ; then
-        #tlinux2.2-kvm_guest
-        uname -r | grep -q "kvm_guest"
-        if [ $? -eq 0 ]; then
-            rpm -Uvh https://mirrors.tencent.com/tlinux/rpm/tlinux-release-kvm-guest-1.0-2.tl2.noarch.rpm
-            [ $? -ne 0 ] && rpm -ivh --force https://mirrors.tencent.com/tlinux/rpm/tlinux-release-kvm-guest-1.0-2.tl2.noarch.rpm
-        fi
-         
-        #tlinux2.2-tkernel3
-        uname -r | grep -q "tlinux3"
-        if [ $? -eq 0 ]; then
-            rpm -Uvh https://mirrors.tencent.com/tlinux/rpm/tlinux-tkernel3-release-1.1-1.tl2.noarch.rpm
-            [ $? -ne 0 ] && rpm -ivh --force https://mirrors.tencent.com/tlinux/rpm/tlinux-tkernel3-release-1.1-1.tl2.noarch.rpm
-        fi
- 
-        result=$(rpm -q -V python)
-        if [ -n "$result" ]; then
-            echo "$result"
-            echo "python rpm is changed."
-            read -r -p "Would you like to reinstall the python rpm?[y/n]" input
-            case $input in
-                [yY][eE][sS]|[yY])
-                    echo "Reinstall python rpm"
-                    python_rpm=$(rpm -q python | grep x86_64)
-                    rpm -ivh --force https://mirrors.tencent.com/tlinux/2.2/os/x86_64/Packages/${python_rpm}.rpm
-                    rpm -ivh --force https://mirrors.tencent.com/tlinux/2.2/tlinux/x86_64/RPMS/${python_rpm}.rpm
-                    ;;
-                [nN][oO]|[nN])
-                    echo "You choose no, exit"
-                    exit 0
-                    ;;
-                *) 
-                    echo "Invalid input..."
-                    exit 1
-                    ;;
-            esac
-        fi
-
-
-        rpm -Uvh https://mirrors.tencent.com/tlinux/rpm/tlinux-release-2-11.tl2.x86_64.rpm
-        [ $? -ne 0 ] && rpm -ivh --force https://mirrors.tencent.com/tlinux/rpm/tlinux-release-2-11.tl2.x86_64.rpm
-        return $?
-    fi
-
-    if is_tlinux 2.6 ; then
-        result=$(rpm -q -V python)
-        if [ -n "$result" ]; then
-            echo "$result"
-            echo "python rpm is changed."
-            read -r -p "Would you like to reinstall the python rpm?[y/n]" input
-            case $input in
-                [yY][eE][sS]|[yY])
-                    echo "Reinstall python rpm"
-                    python_rpm=$(rpm -q python | grep x86_64)
-                    rpm -ivh --force https://mirrors.tencent.com/tlinux/2.6/os/x86_64/Packages/${python_rpm}.rpm
-                    rpm -ivh --force https://mirrors.tencent.com/tlinux/2.6/tlinux/x86_64/RPMS/${python_rpm}.rpm
-                    ;;
-                [nN][oO]|[nN])
-                    echo "You choose no, exit"
-                    exit 0
-                    ;;
-                *) 
-                    echo "Invalid input..."
-                    exit 1
-                    ;;
-            esac
-        fi
-
-        rpm -Uvh https://mirrors.tencent.com/tlinux/2.6/tlinux/x86_64/RPMS/epel-release-7-13.tl2.noarch.rpm
-        [ $? -ne 0 ] && rpm -ivh --force https://mirrors.tencent.com/tlinux/2.6/tlinux/x86_64/RPMS/epel-release-7-13.tl2.noarch.rpm
-        rpm -Uvh https://mirrors.tencent.com/tlinux/2.6/tlinux/x86_64/RPMS/tlinux-release-2-11.tl2.1.x86_64.rpm
-        [ $? -ne 0 ] && rpm -ivh --force https://mirrors.tencent.com/tlinux/2.6/tlinux/x86_64/RPMS/tlinux-release-2-11.tl2.1.x86_64.rpm
-        return $?
-    fi
-}
-
-# tos fix yum, dns, etc.
-tos_fix()
-{
-    fix_op=$1
-    if [ "$fix_op"x == "yum"x ];then
-        tos_fix_yum
-    elif [ "$fix_op"x == "dns"x ];then
-        tos_fix_dns
-    else
-        echo "tos fix $fix_op: invalid option"
-    fi
-}
-
-# tos set dns, etc.
+# tos set irq.
 tos_set()
 {
     set_op=$1
-    if [ "$set_op"x == "dns"x ];then
-        tos_set_dns
-    elif [ "$set_op"x == "irq"x ];then
+    if [ "$set_op"x == "irq"x ];then
         if [ ! -x /etc/init.d/irqaffinity ]; then
             yum -y install tlinux-irqaffinity
         fi

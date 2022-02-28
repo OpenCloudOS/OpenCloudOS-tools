@@ -1,0 +1,2 @@
+This library implements rpcsec_gss (RFC 2203) which allows secure rpc
+communication using gss-api security mechanisms.

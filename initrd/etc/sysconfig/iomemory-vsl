@@ -1,0 +1,41 @@
+# -*- sh -*-
+
+# If ENABLED is not set (non-zero) then iomemory-vsl init script will not be
+# used.
+ENABLED=1
+
+# Timeout in seconds when waiting for an operation
+TIMEOUT=15
+
+# Set VERBOSE=1 for more information, VERBOSE=0 for quiet mode.
+VERBOSE=1
+
+# Set KILL_PROCS_ON_UMOUNT=1 to kill any active processes
+# that might prevent unmounting of the filesystems.
+KILL_PROCS_ON_UMOUNT=1
+
+# Any special module parameters for iomemory-vsl: "modinfo iomemory-vsl"
+# for a listing of driver parameters.
+FIO_DRIVER_MOD_OPTS=""
+
+# An IFS separated list of md arrays to start once the driver is
+# loaded.  Arrays should be configured in the mdadm.conf file.
+# Example: MD_ARRAYS="/dev/md0 /dev/md1"
+MD_ARRAYS=""
+
+# An IFS separated list of LVM volume groups to start once the driver is
+# loaded.  Volumes should be configured in lvm.conf.
+# Example: LVM_VGS="/dev/vg0 /dev/vg1"
+LVM_VGS=""
+
+# An IFS separated list of mount points to mount once the driver is
+# loaded.  These mount points should be listed in /etc/fstab with
+# "noauto" as one of the mount options.
+# Example /etc/fstab:
+#/dev/fioa      /mnt/fioa       ext3    defaults,noauto 0 0
+#/dev/fiob      /mnt/firehose   ext3    defaults,noauto 0 0
+# Example: MOUNTS="/mnt/fioa /mnt/firehose"
+MOUNTS=""
+
+
+FIOFSCK=1

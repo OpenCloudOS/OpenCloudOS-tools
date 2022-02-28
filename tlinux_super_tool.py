@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # ===================================================
-# Copyright (c) [2021] [Tencent]
+# Copyright (c) [2022] [Tencent]
 # [OpenCloudOS Tools] is licensed under Mulan PSL v2.
 # You can use this software according to the terms and conditions of the Mulan PSL v2. 
 # You may obtain a copy of Mulan PSL v2 at:
@@ -15,9 +15,9 @@
 # Created By  : Songqiao Tao
 # Email       : joeytao@tencent.com
 # Created Date: Fri Mar 24 2017
-# Update Date : Fri Sep  4 2020
-# Description : Backup and Recover system for TencentOS(tlinux)
-# Version     : 2.1.2
+# Update Date : Wed Feb 25 2022
+# Description : Backup and Recover system for OpenCloudOS
+# Version     : 3.0.2
 # ====================================
 
 import shutil
@@ -35,14 +35,14 @@ def usage():
     print '''Usage: tos -b | -r [ -f ] [ -p password ] [-s script] -i SQFS_FILE  | -h
 
     Options:
-	-b  		    Backup tlinux system
-	-r		    Recover tlinux system
-        -i  SQFS_FILE       The path to the sqfs file
-	-f		    Format /dev/sda4
-	-p  PASSWORD        Set the new password
-	-s  SCRIPT          An executable file, e.g. a script with shebang to run within the installed new system
-	-u  RPM		    An rpm file, e.g. kernel-xxx.rpm to update within the installed new system
-        -h		    Print this short help text and exit
+    -b                  Backup tlinux system
+    -r                  Recover tlinux system
+    -i  SQFS_FILE       The path to the sqfs file
+    -f                  Format data, e.g. /dev/sda4 in physical machine, /dev/vdb1 in VM, /data in VM without data disk
+    -p  PASSWORD        Set the new password
+    -s  SCRIPT          An executable file, e.g. a script with shebang to run within the installed new system
+    -u  RPM             An rpm file, e.g. kernel-xxx.rpm to update within the installed new system
+    -h                  Print this short help text and exit
 '''
 
 def exit_script(msg=''):
@@ -60,50 +60,74 @@ def check_img(img):
     if not img.endswith('.sqfs'):
         exit_script('Support .sqfs file only.')
 
-def check_sda4():
+def check_data_disk():
     f = open("/etc/mtab", "r")
     for line in f:
         dev = line.split()[0]
         mnt = line.split()[1]
-        if dev == "/dev/sda4":
+        if dev == "/dev/sda4" or dev == "/dev/vdb1":
             f.close()
             return mnt
     f.close()
-    exit_script("/dev/sda4 is not found or not mounted")
 
-def is_tlinux1():
-    if os.path.isfile("/etc/tlinux-release"):
-        f = open("/etc/tlinux-release")
+    if os.path.exists("/data"):
+        return "/data"
+    else:
+        try:
+            os.mkdir("/data")
+            return "/data"
+        except:
+            exit_script("/data create failed.")
+
+def is_oc8():
+    if os.path.isfile("/etc/opencloudos-release"):
+        f = open("/etc/opencloudos-release")
         for line in f:
-            if "1." in line:
+            if "8." in line:
                 f.close()
                 return True
         f.close()
     return False
 
-def is_tlinux2():
-    if os.path.isfile("/etc/tlinux-release"):
-        f = open("/etc/tlinux-release")
+def is_vm():
+    if os.path.isfile("/proc/cmdline"):
+        f = open("/proc/cmdline")
         for line in f:
-            if "2." in line:
+            if "xvda" in line:
                 f.close()
                 return True
         f.close()
+    
+    p = subprocess.Popen(["dmidecode"], stdout=subprocess.PIPE)
+    vm_desktop_pt = re.compile(r"Manufacturer: innotek GmbH|Vendor: Parallels|Manufacturer: VMware")
+    vm_cloud_pt = re.compile(r"Product Name: KVM|Product Name: CVM|Manufacturer: QEMU")
+    vm_desktop_flag = False
+    vm_cloud_flag = False
+    for line in p.stdout:
+        m1 = vm_desktop_pt.search(line)
+        m2 = vm_cloud_pt.search(line)
+        if m1:
+            vm_desktop_flag = True
+        if m2:
+            vm_cloud_flag = True
+    if vm_desktop_flag == False and vm_cloud_flag == True:
+        return True
+    
     return False
 
-def is_tlinux3():
-    if os.path.isfile("/etc/tlinux-release"):
-        f = open("/etc/tlinux-release")
+def is_rootsize_max():
+    if os.path.isfile("/proc/cmdline"):
+        f = open("/proc/cmdline")
         for line in f:
-            if "3." in line:
+            if "rootsize=max" in line:
                 f.close()
                 return True
         f.close()
     return False
 
 def check_os():
-    if not (is_tlinux1() or is_tlinux2() or is_tlinux3()):
-        exit_script("only tlinux is supported")
+    if not (is_oc8()):
+        exit_script("only OpenCloudOS is supported")
     if os.uname()[-1] != 'x86_64':
         exit_script("only x86_64 is supported")
 
@@ -113,8 +137,8 @@ def get_iface_hwaddr_map():
         iface = os.path.basename(path)
         hwaddr = file(os.path.join(path, "address")).read().strip()
         tmp_map[iface] = hwaddr
-    if "eth0" not in tmp_map or "eth1" not in tmp_map:
-        exit_script("machine must have eth0 and eth1")
+    if "eth0" not in tmp_map and "eth1" not in tmp_map:
+        exit_script("machine must have eth0 or eth1")
     return tmp_map
 
 def copy_files(option, img, sqfs_dir, script, rpm_file):
@@ -134,8 +158,8 @@ def copy_files(option, img, sqfs_dir, script, rpm_file):
             f.write("%s=%s\n" % (key, iface_hwaddr_map[key]))
         f.close()
 
-def grub_add_entry(option, img, format_sda4, passwd):
-    if format_sda4:
+def grub_add_entry(option, img, format_data, passwd, vm):
+    if format_data:
         format_value = 1
     else:
         format_value = 0
@@ -143,94 +167,30 @@ def grub_add_entry(option, img, format_sda4, passwd):
         pw_value = passwd
     else:
         pw_value = 0
-    if is_tlinux1():
-        grub_conf = '/boot/grub/grub.conf'
-        if os.path.exists("/sys/firmware/efi") and os.path.isfile("/boot/efi/EFI/tencent/grub.efi") :
-            grub_conf = '/boot/efi/EFI/tencent/grub.conf'
+    grub_conf = '/boot/grub2/grub.cfg'
+    #if os.path.exists("/sys/firmware/efi") and os.path.isfile("/boot/efi/EFI/centos/grubenv") :
+    #    os.remove("/boot/grub2/grubenv")
+    #    shutil.copy("/boot/efi/EFI/centos/grubenv", "/boot/grub2/grubenv") 
+    if vm:
+        console = "tty0 console=ttyS0,115200"
     else:
-        grub_conf = '/boot/grub2/grub.cfg'
-        #if os.path.exists("/sys/firmware/efi") and os.path.isfile("/boot/efi/EFI/centos/grubenv") :
-        #    os.remove("/boot/grub2/grubenv")
-        #    shutil.copy("/boot/efi/EFI/centos/grubenv", "/boot/grub2/grubenv") 
-    console = "tty0"
+        console = "tty0"
     img_name = ''
     if option == "recovery":
         basename = os.path.basename(img)
         img_name = basename.replace(".sqfs", "")
-    title1_recovery = '''
-title Tencent tlinux (Recovery)
-        root (hd0,0)
-        kernel /boot/vmlinuz-2.0-backup-recovery quiet elevator=noop  i8042.noaux console=%s panic=5 osname=%s installmethod=harddisk recovery-mode format_sda4=%d passwd=%s
-        initrd /boot/initrd-2.0-backup-recovery.img
-''' % (console, img_name, format_value, pw_value)
-
-    title1_backup = '''
-title Tencent tlinux (Backup)
-        root (hd0,0)
-        kernel /boot/vmlinuz-2.0-backup-recovery quiet elevator=noop  i8042.noaux console=%s panic=5 backup-mode
-        initrd /boot/initrd-2.0-backup-recovery.img
-''' % (console)
     
     print('backup the grub_conf')
     shutil.copy(grub_conf, grub_conf + ".bak")
-    if is_tlinux1():
-        if option == 'backup':
-            option_title = '(Backup)'
-        if option == 'recovery':
-            option_title = '(Recovery)'
-        f = open(grub_conf, 'r')
-        cnt = 0
-        while True:
-            line = f.readline()
-            if not line:
-                break;
-            if line.startswith('title'):
-                if option_title in line:
-                    break;
-                cnt += 1
-        f.close()
-
-        f = open(grub_conf, 'a')
-        if option == 'backup':
-            f.write(title1_backup)
-        else:
-            f.write(title1_recovery)
-        f.close()
-        if os.system('echo "savedefault --default=%d --once" | grub --batch' % cnt):
-            exit_script("setup grub failed !")
-    if is_tlinux2():
-        if os.system('grub2-mkconfig -o %s' % grub_conf):
-            exit_script("setup grub failed !")
-        rb_flag = ''    
-        f = open(grub_conf, 'r')
-        cnt = 0
-        while True:
-            line = f.readline()
-            if not line:
-                break;
-            if line.startswith('menuentry'):
-                if 'backup-recovery' in line:
-                    rb_flag = 1
-                    break;
-                cnt += 1
-        f.close()
-        if rb_flag == '':
-            exit_script("backup-recovery item not found !")
-        if option == 'backup':
-            os.system('sed -i "/vmlinuz-2.0-backup-recovery/ s/$/ panic=5 backup-mode/" %s' % grub_conf)
-        else:
-            os.system('sed -i "/vmlinuz-2.0-backup-recovery/ s/$/ osname=%s installmethod=harddisk panic=5 recovery-mode format_sda4=%d passwd=%s/" %s' % (img_name, format_value, pw_value, grub_conf) )
-        os.system('grub2-reboot %d' % cnt)
-
-    if is_tlinux3():
+    if is_oc8():
         print('add new boot entry!')
-        if os.system('grubby --add-kernel=/boot/vmlinuz-2.0-backup-recovery --title="TencentOS backup and revovery" --initrd=/boot/initrd-2.0-backup-recovery.img --copy-default'):
+        if os.system('grubby --add-kernel=/boot/vmlinuz-2.0-backup-recovery --title="OpenCloudOS backup and revovery" --initrd=/boot/initrd-2.0-backup-recovery.img --copy-default'):
             exit_script("setup grub failed !")
         if option == 'backup':
             os.system('sed -i "/^options/ s/$/ panic=5 backup-mode/" /boot/loader/entries/*backup-recovery.conf')
         else:
-            os.system('sed -i "/^options/ s/$/ osname=%s installmethod=harddisk panic=5 recovery-mode format_sda4=%d passwd=%s/" /boot/loader/entries/*backup-recovery.conf ' % (img_name, format_value, pw_value ))
-        os.system('grub2-reboot "TencentOS backup and revovery"')
+            os.system('sed -i "/^options/ s/$/ osname=%s installmethod=harddisk panic=5 recovery-mode format_data=%d passwd=%s/" /boot/loader/entries/*backup-recovery.conf ' % (img_name, format_value, pw_value ))
+        os.system('grub2-reboot "OpenCloudOS backup and revovery"')
 
 def get_sshd_ip():
     p = subprocess.Popen(["netstat", "-ntpl"], stdout=subprocess.PIPE)
@@ -270,7 +230,7 @@ def main():
     img = ''
     option = ''
     passwd = ''
-    format_sda4 = False
+    format_data = False
     script = ''
     rpm_file = ''
     for o, a in opts:
@@ -282,12 +242,12 @@ def main():
         if o == '-r':
             option = 'recovery'
         if o == '-f':
-            format_sda4 = True
+            format_data = True
         if o == '-i':
             img = os.path.abspath(a)
-	if o == '-p':
+        if o == '-p':
             passwd = a
-	if o == '-s':
+        if o == '-s':
             script = os.path.abspath(a)
             if not os.path.isfile(script):
                 exit_script("wrong -s option, %s does not exist or is not a regular file" % script)
@@ -296,11 +256,11 @@ def main():
             if not os.path.isfile(rpm_file):
                 exit_script("wrong -u option, %s does not exist or is not a regular file" % rpm_file)
         if o == '-n':
-            print("Backup tlinux system and no need to reboot")
+            print("Backup OpenCloudOS system and no need to reboot")
             if os.system('/usr/lib/opencloudos-tools/tos-backup.sh'):
                 exit_script("setup grub failed !")
             else:
-                print("Backup Tlinux system successfully!")
+                print("Backup OpenCloudOS system successfully!")
                 sys.exit(0)
     if option == '':
         print("-b or -r parameter is required!")
@@ -309,11 +269,12 @@ def main():
     if option == 'recovery':
         check_img(img)
         
-    sda4_dir = check_sda4()
-    check_memory_size_M(3000) 
+    vm = is_vm()
+    data_dir = check_data_disk()
+    check_memory_size_M(3000)
     check_os()
-    copy_files(option, img, sda4_dir, script, rpm_file)
-    grub_add_entry(option, img, format_sda4, passwd)
+    copy_files(option, img, data_dir, script, rpm_file)
+    grub_add_entry(option, img, format_data, passwd, vm)
     
     if option == 'backup':
         print("\n!! Please reboot to backup the system as soon as possible !!")

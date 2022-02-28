@@ -1,0 +1,6 @@
+#!/bin/sh
+
+. hal-functions
+
+hal_check_priv org.freedesktop.hal.power-management.hibernate
+hal_exec_backend

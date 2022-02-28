@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="ISO-8859-1"?> <!-- -*- SGML -*- -->
+
+<deviceinfo version="0.2">
+  <device>
+
+    <!-- These are raw scancodes produced by the atkbd driver -->
+    <match key="@input.originating_device:info.linux.driver" string="atkbd">
+
+      <match key="/org/freedesktop/Hal/devices/computer:system.formfactor" string="laptop">
+        <match key="/org/freedesktop/Hal/devices/computer:system.hardware.vendor" prefix="Dell">
+          <append key="input.keymap.data" type="strlist">e001:playpause</append> <!-- Play/Pause -->
+          <append key="input.keymap.data" type="strlist">e002:stopcd</append> <!-- Stop -->
+          <append key="input.keymap.data" type="strlist">e003:previoussong</append> <!-- Previous song -->
+          <append key="input.keymap.data" type="strlist">e004:nextsong</append> <!-- Next song -->
+          <append key="input.keymap.data" type="strlist">e005:brightnessdown</append> <!-- Fn+Down arrow Brightness Down -->
+          <append key="input.keymap.data" type="strlist">e006:brightnessup</append> <!-- Fn+Up arrow Brightness Up -->
+          <append key="input.keymap.data" type="strlist">e007:battery</append> <!-- Fn+F3 battery icon -->
+          <append key="input.keymap.data" type="strlist">e008:wlan</append> <!-- Fn+F2 Turn On/Off Wireless -->
+          <append key="input.keymap.data" type="strlist">e009:ejectclosecd</append> <!-- Fn+F10 Eject CD -->
+          <append key="input.keymap.data" type="strlist">e00a:suspend</append> <!-- Fn+F1 hibernate -->
+          <append key="input.keymap.data" type="strlist">e00b:switchvideomode</append> <!-- Fn+F8 CRT/LCD (high keycode: "displaytoggle") -->
+          <append key="input.keymap.data" type="strlist">e00f:switchvideomode</append> <!-- Fn+F7 aspect ratio -->
+          <append key="input.keymap.data" type="strlist">e010:previoussong</append> <!-- Front panel previous song -->
+          <append key="input.keymap.data" type="strlist">e011:prog1</append> <!-- Wifi Catcher (DELL Specific) -->
+          <append key="input.keymap.data" type="strlist">e012:media</append> <!-- MediaDirect button (house icon) -->
+          <append key="input.keymap.data" type="strlist">e013:f23</append> <!-- FIXME Fn+Left arrow Auto Brightness -->
+          <append key="input.keymap.data" type="strlist">e015:camera</append> <!-- Shutter button Takes a picture if optional camera available -->
+          <append key="input.keymap.data" type="strlist">e00c:f23</append> <!-- Fn+Right arrow Auto Brightness -->
+          <append key="input.keymap.data" type="strlist">e019:nextsong</append> <!-- Front panel next song -->
+          <append key="input.keymap.data" type="strlist">e01b:switchvideomode</append> <!-- Display Toggle button -->
+          <append key="input.keymap.data" type="strlist">e022:playpause</append> <!-- Front panel play/pause -->
+          <append key="input.keymap.data" type="strlist">e024:stopcd</append> <!-- Front panel stop -->
+          <append key="input.keymap.data" type="strlist">e06d:media</append> <!-- MediaDirect button -->
+          <append key="info.capabilities" type="strlist">input.keymap</append>
+	
+	  <match key="/org/freedesktop/Hal/devices/computer:system.hardware.product" contains="Latitude XT">
+            <append key="input.keymap.data" type="strlist">e058:screenlock</append> <!-- FIXME: Tablet lock button -->
+            <append key="input.keymap.data" type="strlist">e017:email</append> <!-- Tablet email button -->
+            <append key="input.keymap.data" type="strlist">e018:f21</append> <!-- FIXME: Tablet screen rotatation -->
+            <append key="input.keymap.data" type="strlist">e01a:setup</append> <!-- Tablet tools button -->
+          </match>
+
+        </match>
+      </match>
+    </match>
+
+    <!-- Dell USB Keyboard Hub -->
+    <match key="@input.originating_device:info.linux.driver" string="usbhid">
+      <match key="info.product" string="Dell Dell USB Keyboard Hub">
+        <match key="@input.originating_device:usb.interface.number" int="0x1">
+          <append key="info.capabilities" type="strlist">input.keymap</append>
+          <append key="input.keymap.data" type="strlist">ce103:media</append> <!-- Media/Music key -->
+        </match>
+      </match>
+    </match>
+
+  </device>
+</deviceinfo>
+
+

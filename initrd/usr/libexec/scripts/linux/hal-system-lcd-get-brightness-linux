@@ -1,0 +1,69 @@
+#!/bin/sh
+#
+# Copyright (C) 2005 Richard Hughes <richard@hughsie.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
+if [ "$HAL_PROP_LAPTOP_PANEL_ACCESS_METHOD" = "pmu" ]; then
+	value="`hal-system-power-pmu getlcd`"
+	if [ $? -ne 0 ]; then
+		echo "org.freedesktop.Hal.Device.LaptopPanel.NotSupported" >&2
+		echo "hal-system-power-pmu getlcd returned != 0" >&2
+		exit 1
+	fi
+	exit ${value}
+elif [ "$HAL_PROP_LAPTOP_PANEL_ACCESS_METHOD" = "sonypi" ]; then
+	value="`hal-system-sonypic getlcd`"
+	if [ $? -ne 0 ]; then
+		echo "org.freedesktop.Hal.Device.LaptopPanel.NotSupported" >&2
+		echo "hal-system-sonypic getlcd returned != 0" >&2
+		exit 1
+	fi
+	exit ${value}
+fi
+
+# Check for file existance and that it's readable
+if [ ! -r $HAL_PROP_LINUX_ACPI_PATH ]; then
+	echo "org.freedesktop.Hal.Device.LaptopPanel.NotSupported" >&2
+	echo "$HAL_PROP_LINUX_ACPI_PATH not readable!" >&2
+	exit 1
+fi
+
+if [ "$HAL_PROP_LAPTOP_PANEL_ACCESS_METHOD" = "toshiba" ]; then
+	# cat /proc/acpi/toshiba/lcd
+	#  brightness:              5
+	#  brightness_levels:       8
+	value="`cat $HAL_PROP_LINUX_ACPI_PATH | grep brightness: | awk '{print $2;}'`"
+elif [ "$HAL_PROP_LAPTOP_PANEL_ACCESS_METHOD" = "asus" ]; then
+	# cat /proc/acpi/asus/brn
+	#  5
+	value="`cat $HAL_PROP_LINUX_ACPI_PATH`"
+elif [ "$HAL_PROP_LAPTOP_PANEL_ACCESS_METHOD" = "panasonic" ]; then
+	# cat /proc/acpi/pcc/brightness
+	#  5
+	value="`cat $HAL_PROP_LINUX_ACPI_PATH`"
+elif [ "$HAL_PROP_LAPTOP_PANEL_ACCESS_METHOD" = "ibm" ]; then
+	# cat /proc/acpi/ibm/brightness
+	#  level:          5
+	#  commands:       up, down
+	#  commands:       level <level> (<level> is 0-7)
+	value="`cat $HAL_PROP_LINUX_ACPI_PATH | grep level: | awk '{print $2;}'`"
+elif [ "$HAL_PROP_LAPTOP_PANEL_ACCESS_METHOD" = "sony" ]; then
+	# cat /proc/acpi/sony/brightness
+	#  5
+	value="`cat $HAL_PROP_LINUX_ACPI_PATH`"
+	value=$(($value-1))
+elif [ "$HAL_PROP_LAPTOP_PANEL_ACCESS_METHOD" = "omnibook" ]; then
+	# cat /proc/omnibook/lcd
+	#  LCD brightness:  7
+	value="`cat $HAL_PROP_LINUX_ACPI_PATH | awk '{print $3;}'`"
+else
+	echo "org.freedesktop.Hal.Device.LaptopPanel.NotSupported" >&2
+	echo "No ACPI method found" >&2
+	exit 1
+fi
+
+exit ${value}

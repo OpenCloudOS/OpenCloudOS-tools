@@ -1,0 +1,556 @@
+#!/bin/sh
+#
+# iomemory-vsl      For loading Fusion-io block devices
+#
+# chkconfig: 12345 01 99
+# description: Fusion-io iomemory-vsl storage device block drivers (only necessary for non-udev distros)
+# probe: true
+# config: /etc/sysconfig/iomemory-vsl
+#
+### BEGIN INIT INFO
+# Provides:       iomemory-vsl
+# Required-Start: boot.udev
+# Required-Stop:  $local_fs
+# X-Start-Before:
+# X-Stop-After:
+# Default-Start:  1 2 3 4 5
+# Default-Stop:   0 1 6
+# Description:    Start the Fusion-io iomemory-vsl storage device.
+### END INIT INFO
+
+NAME=iomemory-vsl
+
+# 'iodrive=0' can be passed as a kernel boot argument to disable iomemory-vsl loading.
+
+# Source function library.
+[ -f /usr/lib/fio/init/init-functions ] && . /usr/lib/fio/init/init-functions
+
+# Source networking configuration.
+# MWZ - We may need this later for IB/distributed stuff, so I'm leaving it commented out 
+#if [ ! -f /etc/sysconfig/network ]; then
+#    exit 0
+#fi
+
+# Check for and source configuration file otherwise set defaults
+INIT_CONFIG="/etc/sysconfig/$NAME"
+[ -f "$INIT_CONFIG" ] && . "$INIT_CONFIG"
+
+# Set defaults - these can be overridden by setting a value in
+# /etc/sysconfig/iomemory-vsl.
+
+# Create reverse order of MD_ARRAYS for use during unmounting and disassembly of ARRAYS
+MD_ARRAYS_REV=$(echo $MD_ARRAYS | awk '{for (i=NF;i>=1;i--) printf $i" "} END{print ""}')
+
+#set -x
+true ${TEST:=}
+
+# If the init script should be enabled
+true ${ENABLED:=}
+
+# Number of seconds to wait for a command to timeout
+true ${TIMEOUT:=15}
+
+# verbose output (boolean)
+true ${VERBOSE:=1}
+
+# kill processes before umounting iomemory-vsl devices (boolean)
+true ${KILL_PROCS_ON_UMOUNT:=1}
+
+# A list of mount points to mount once the driver is loaded.  These
+# should have the "noauto" option set in /etc/fstab.
+# Ex MOUNTS="/mnt/firehose"
+
+BINDIR=/usr/bin
+SUBSYS_LOCK="/var/lock/subsys/$NAME"
+
+# parse_bool <value>
+# Summary:  Parse <value> for reasonable boolean values and return
+#           0 if the value is false and 1 if the value is true.
+parse_bool() {
+    local value="${1}"
+
+    local rc
+
+    case $value in
+        (0|N|n|NO|No|no|F|f|FALSE|False|false|OFF|Off|off) rc=0 ;;
+        (1|Y|y|YES|Yes|yes|T|t|TRUE|True|true|ON|On|on)    rc=1 ;;
+        (*) rc=2 ;;
+    esac
+
+    echo $rc
+}
+
+
+VERBOSE="$(parse_bool ${VERBOSE})"
+KILL_PROCS_ON_UMOUNT="$(parse_bool ${KILL_PROCS_ON_UMOUNT})"
+
+
+if [ "$VERBOSE" -eq 0 ]; then
+    echo_verbose=true
+else
+    echo_verbose=echo
+fi
+
+
+# busy_pids <dir1> [ <dir2> . . . ]
+#    Summary:    Return a list of process IDs (PIDs) that are associated with a directory
+#                or sub-directory
+#    dir?:       a directory for checking wich processes have CWDs or open files
+#    return <pid1> [ <pid2> . . . ]
+#                A list of process IDs that are active in the directory lists
+busy_pids() {
+    lsof -Fp "$@" | (while read p; do printf "${p#p} "; done)
+}
+
+
+# kill_procs <signal> <dir1> [ <dir2> . . . ]
+#    Summary:    Send the <signal> to all processes running from any
+#                directory, or subdirectory, in the dir list.
+#    <signal>    Signal to be sent to processes
+#    <dir?>      Directories to check for active processes
+#    return 0:   All processes were killed.
+#    return 1:   Some processes didn't die prior to timeout
+kill_procs() {
+    local signal="${1:--TERM}"
+    shift
+
+    local rc=1
+
+    if [ -z "$*" ] ; then
+        # No mounted filesysems, nothing to kill
+        return 1
+    fi
+
+    pids="$(busy_pids "$@")"
+    [ -z "${pids}" ] && return 0
+
+    ${echo_verbose} kill ${signal} ${pids}
+    kill ${signal} ${pids}
+
+    local timeout=$((TIMEOUT*2))
+    while [ ${timeout} -ge 0 ]; do
+        pids="$(busy_pids "$@")"
+        if [ -z "${pids}" ]; then
+            rc=0
+            break
+        fi
+        sleep .5
+        timeout=$((timeout-1))
+    done
+
+    if [ -n "${pids}" ]; then
+        ${echo_verbose} "PIDs still active:" ${pids}
+    fi
+    return $rc
+}
+
+
+# module_status [ <module> ]
+#    Summary:    Determine if a module is loaded
+#    <module>    Name of module to check: default is iomemory-vsl
+#    return 0:   module is loaded
+#    return 1:   module is not loaded
+module_status() {
+    #local module="$(echo $NAME | sed 's/[^a-zA-Z0-9]/_/g;')"
+    local rc=0
+
+    #grep -q "$module" /proc/modules || rc=1
+
+    return $rc
+}
+
+
+# do_umounts <mount1> [ <mount2> . . . ]
+#    Summary:    Unmount any filesystems or filesystems associated with a block device
+#    mount?:     A mount point or a block device that provides a file system for a mount point
+#    return 0:   All mounts were successfully unmounted
+#    return 1:   A failure occurred while unmounting one ore more mount points
+do_umounts() {
+    local rc=0
+    local mounts
+    local m
+
+    # Make sure there is something to unmount, otherwise it matches everything
+    # return true if there is nothing to umount
+    if [ -z "$*" ] ; then
+        return 0
+    fi
+    # Add in base /dev/fioX block devices to the search
+    # be on the safe side by removing any extra spaces and tabs
+    mounts="/dev/fio[a-z][a-z]*|$(echo "$@" | sed 's/[ \t][ \t]*/ /g; s/^ //; s/ $//; s/ /|/g;')"
+
+    # Reverse sort the filesystems to do nested mounts in dependency order
+    local mounted_filesystems="$(mount | egrep -w ${mounts} | sed -e 's/.* on //; s/ .*//;' | sort -r)"
+
+    if [ -n "${mounted_filesystems}" ]; then
+        if [ "$KILL_PROCS_ON_UMOUNT" -eq 1 ]; then
+            if ! kill_procs -TERM ${mounted_filesystems}; then
+                kill_procs -KILL ${mounted_filesystems}
+            fi
+        fi
+
+        for m in ${mounted_filesystems}; do
+            ${echo_verbose} Unmounting ${m}
+            umount ${m} || rc=1
+        done
+    fi
+
+    return $rc
+}
+
+
+# stop_lvm <vg1> [ <vg2> . . . ]
+#    Summary:    Shuts down the LVM volume groups provided as arguments
+#    vg?:        An LVM volume group such as "/dev/vg0"
+#    return 0:   All volume groups were successfully shut down
+#    return 1:   A failure occurred while shutting down one or more volume groups
+stop_lvm() {
+    local rc=0
+    local m
+
+    # check for any lvm volume groups to stop
+    for m in "$@"; do
+        ${echo_verbose} Stopping volume group ${m}
+            # make them unavailable to the kernel
+        if ! msg="$(/sbin/vgchange -an ${m} 2>&1)"; then
+            echo "${msg}" >&2
+            echo "Failed to stop LVM volume group ${m}" >&2
+            rc=1
+        fi
+    done
+
+    return $rc
+}
+
+
+# stop_md <md1> [ <md2> . . . ]
+#    Summary:    Shuts down the multi-devices (software raid devices) provided as arguments
+#    md?:        A multi-device (software raid devic) such as "/dev/md0"
+#    return 0:   All MDs were successfully shut down
+#    return 1:   A failure occurred while shutting down one or more MDs
+stop_md() {
+    local rc=0
+    local m
+
+    # check for any md arrays to stop
+    for m in "$@"; do
+        ${echo_verbose} Stopping array ${m}
+        # '--quiet' option to mdadm isn't available on older versions
+        if ! msg="$(/sbin/mdadm --stop ${m} 2>&1)"; then
+            echo "${msg}" >&2
+            echo "Failed to stop md array ${m}" >&2
+            rc=1
+        fi
+    done
+
+    return $rc
+}
+
+
+# unload_driver
+#    Summary:    Unload the iomemory-vsl drivers
+#    return 0:   All drivers were successfully unloaded
+#    return 1:   An error occurred while unloading one or more drivers
+unload_driver() {
+    local rc=0
+    local m=$NAME
+
+    # Detach in parallel
+    for i in /dev/fct* ; do
+        fio-detach $i &
+    done
+    wait
+
+    if module_status iomemory-vsl; then
+        ${echo_verbose} Unloading module $m
+        #rmmod $m || rc=1
+    fi
+
+    return $rc
+}
+
+
+# unload
+#    Summary:   Unwind any users of the iomemory-vsl and unload the driver
+#    return 0:  success
+#    return 1:  failure
+unload() {
+    local rc=0
+    local m
+
+    # OK, first see if the fio driver is loaded
+    if ! module_status; then
+        ${echo_verbose} "Already unloaded"
+        return 0
+    fi
+
+    do_umounts ${MD_ARRAYS_REV} ${LVM_VGS} ${MOUNTS}  || rc=1
+    stop_lvm   ${LVM_VGS}                             || rc=1
+    stop_md    ${MD_ARRAYS_REV}                       || rc=1
+    unload_driver                                     || rc=1
+
+    return $rc
+}
+
+
+# load_driver
+#    Summary:    Load the iomemory-vsl drivers
+#    return 0:   All drivers were successfully loaded
+load_driver() {
+    local driver=$NAME
+    local module_name=
+
+#    if module_status; then
+#        ${echo_verbose} Already loaded module $NAME
+#        return 0
+#    fi
+
+    # Detach in parallel
+    for i in /dev/fct* ; do
+        fio-attach $i &
+    done
+    wait
+
+#    if ! module_status $NAME; then
+#        module_name=$(echo $driver | sed -e 's/[^a-zA-Z0-9]/_/g;')
+#        ${echo_verbose} Loading module $driver
+#        if ! /sbin/modprobe $driver $(eval echo \$${module_name}_MOD_OPTS); then
+#            return 1
+#        fi
+#    fi
+    return 0
+}
+
+
+# start_md <md1> [ <md2> . . . ]
+#    Summary:    Start all multi-devices (software raid devices) provided as arguments
+#    md?:        A multi-device (software raid device) such as "/dev/md0"
+#    return 0:   All MDs were started successfully
+#    return 1:   A failure occurred while starting one or more MDs
+start_md() {
+    local rc=0
+    local m
+
+    # check for any md arrays to start
+    for m in "$@"; do
+        if /sbin/mdadm --detail ${m} >/dev/null 2>&1; then
+            ${echo_verbose} Already started array ${m}
+        else
+            ${echo_verbose} Starting array ${m}
+            # '--quiet' option to mdadm isn't available on older versions
+            if ! msg="$(/sbin/mdadm --assemble ${m} 2>&1)"; then
+                echo "${msg}" >&2
+                echo "Failed to start md array ${m}" >&2
+                rc=1
+            fi
+        fi
+    done
+
+    return $rc
+}
+
+
+# start_lvm <vg1> [ <vg2> . . . ]
+#    Summary:    Start the LVM volume groups provided as arguments
+#    vg?:        An LVM volume group such as "/dev/vg0"
+#    return 0:   All LVM volume groups were started successfully
+#    return 0:   A failure occurred while starting one or more volume groups
+start_lvm() {
+    local rc=0
+    local m
+
+    # scan for lvm volume groups
+    if [ -n "$@" ] && ! msg="$(/sbin/vgscan 2>&1)"; then
+        echo "${msg}" >&2
+    fi
+
+    for m in "$@"; do
+        if [ -z "$(lvdisplay ${m} | sed -n -e '/LV Status.*NOT/p')" ]; then
+            ${echo_verbose} Already started volume group ${m}
+        else
+            ${echo_verbose} Starting volume group ${m}
+            # make them available to the kernel
+            if ! msg="$(/sbin/vgchange -ay ${m} 2>&1)"; then
+                echo "${msg}" >&2
+                echo "Failed to start LVM volume group ${m}" >&2
+                rc=1
+            fi
+        fi
+    done
+
+    return $rc
+}
+
+
+# do_mounts <mount1> [ <mount2> . . . ]
+#    Summary:   Mount filesystems provided as argemunts
+#    mount?:    A filesystem to mount - must be listed in /etc/fstab and have "noauto'
+#               set as an option
+#    return 0:  success
+#    return 1:  failure
+do_mounts() {
+    local rc=0
+    local m
+
+    # mount filesystems
+#    for m in $(echo "$@" | sort); do
+#        if grep -q ${m} /proc/mounts; then
+#            ${echo_verbose} Already mounted ${m}
+#        else
+#            ${echo_verbose} Mounting ${m}
+#            if ! mount ${m}; then
+#                rc=1
+#                echo "Failed to mount ${m}" >&2
+#            fi
+#        fi
+#    done
+for m in $(echo "$@" | sort); do
+        if grep -q ${m} /proc/mounts; then
+                 ${echo_verbose} Already mounted ${m}
+                else
+                        if [ "$FIOFSCK" = 1 ]; then
+                                logger -t iomemory-vsl -s "Checking volume ${m} "
+                                ${echo_verbose} Checking volume ${m}
+                                fsck -y ${m}
+                                rc=$?
+                                if [ "$rc" -eq "0" ]; then
+                                        logger -t iomemory-vsl -s "${m}  Filesystem check successful."
+                                elif [ "$rc" -eq "1" ]; then
+                                        logger -t iomemory-vsl -s "${m}  Filesystem repair successful."
+                                elif [ "$rc" -eq "2" -o "$rc" -eq "3" ]; then
+                                        logger -t iomemory-vsl -s "${m}  Filesystem repair successful. Not mounting filesystem.  Reboot required to complete repairs. "
+                                        exit 1
+                                elif [  $rc -gt 3 ]; then
+                                        logger -t iomemory-vsl -s "${m}  Filesystem repair unsuccessful. Not mounting filesystem. Please manually run fsck."
+                                        exit 1
+
+                                fi
+                        fi
+                        ${echo_verbose} Mounting ${m}
+                        if ! mount ${m}; then
+                                rc=1
+                                echo "Failed to mount ${m}" >&2
+                        fi
+                fi
+        done
+
+    return $rc
+}
+
+
+# load
+#    Summary:   Load drivers and setup users of the block devices
+#    return 0:  success
+#    return 1:  failure
+load() {
+    local rc=0
+
+    load_driver            || return 1
+    start_md  ${MD_ARRAYS} || rc=1
+    start_lvm ${LVM_VGS}   || rc=1
+    do_mounts ${MOUNTS}    || rc=1
+
+    return $rc
+}
+
+
+main() {
+
+    if [ -z "$ENABLED" ]; then
+        printf "$NAME is not enabled in the init config '$INIT_CONFIG'\n"
+        exit 0
+    fi
+
+# Test to see if the iomemory-vsl is disabled by a kernel boot argument
+    kernel_args="$(cat /proc/cmdline)"
+    fio_test=${kernel_args##*iodrive=}
+    if [ "${kernel_args}" != "${fio_test}" ]; then
+    # there was a match for 'iodrive=' in /proc/cmdline
+
+        disable_state=$(parse_bool ${fio_test% *})
+        if [ "${disable_state}" -eq 1 ]; then
+            echo "$NAME disabled by kernel boot argument"
+            exit 0
+        fi
+    fi
+
+
+# See how we were called.
+    case "$1" in
+        start)
+        # Start daemons.
+            echo -n "Starting $NAME: "
+            ${echo_verbose}
+
+	    load
+#            if load; then
+#                x_log_success_msg
+#                touch ${SUBSYS_LOCK}
+#            else
+#                x_log_failure_msg
+#            fi
+            ;;
+
+        stop)
+            echo -n "Stopping $NAME: "
+            ${echo_verbose}
+             
+             unload
+#            if unload; then
+#                x_log_success_msg
+#                rm -f ${SUBSYS_LOCK}
+#            else
+#                x_log_failure_msg
+#            fi
+            ;;
+
+        status)
+            echo -n "$NAME "
+
+            if module_status; then
+                echo "is running"
+            else
+                echo "is stopped"
+            fi
+            ;;
+
+        restart)
+            $0 stop
+            $0 start
+            ;;
+
+        reload)
+            if module_status; then
+                $0 restart
+            fi
+            ;;
+
+        probe)
+            if module_status; then
+                echo "restart"
+            fi
+            ;;
+
+        condrestart)
+            if [ -f ${SUBSYS_LOCK} ]; then
+                $0 stop
+                $0 start
+            fi
+            ;;
+
+        *)
+            echo "Usage: $(basename $0) {start|stop|status|restart|reload|condrestart}"
+            exit 1
+    esac
+
+    exit 0
+}
+
+
+if [ "$#" -eq 0 ]; then
+    main
+else
+    main "$@"
+fi
+
+# vim: set ts=4 expandtab sw=4:

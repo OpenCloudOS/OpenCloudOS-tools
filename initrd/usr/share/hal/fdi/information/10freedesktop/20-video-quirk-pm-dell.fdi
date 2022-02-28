@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="ISO-8859-1"?> <!-- -*- SGML -*- -->
+<deviceinfo version="0.2">
+  <device>
+    <match key="system.hardware.vendor" prefix="Dell">
+
+      <!-- Dell Latitude -->
+      <match key="system.hardware.product" prefix="Latitude">
+        <match key="system.hardware.product" contains="C500">
+          <merge key="power_management.quirk.dpms_suspend" type="bool">true</merge>
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains="C600">
+          <merge key="power_management.quirk.radeon_off" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains="C800">
+          <merge key="power_management.quirk.vbemode_restore" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains_outof="X300;D820">
+	  <!-- the Dell D820 is also reported to work with vbe_post+vbemode_restore and
+               need may dpms_on -->
+          <merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains_outof="CPx J800GT;D400;D410;D420;D430;D520;D530;C610;D620;D830">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+          <merge key="power_management.quirk.vbemode_restore" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains_outof="C400;C840;D500;D505;D800;X200">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+          <merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+        </match>
+	<match key="system.hardware.product" contains_outof="D600;D610">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+          <merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+          <merge key="power_management.quirk.no_fb" type="bool">true</merge>
+        </match>
+	<match key="system.hardware.product" contains="D630">
+	  <match key="system.firmware.version" compare_lt="A12">
+	    <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+            <merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+            <merge key="power_management.quirk.no_fb" type="bool">true</merge>
+	  </match>	
+          <match key="system.firmware.version" compare_ge="A12">
+            <merge key="power_management.quirk.vbemode_restore" type="bool">true</merge>
+	  </match>
+        </match>
+        <match key="system.hardware.product" suffix="X1">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+        </match>
+        <!-- these need no quirks -->
+        <match key="system.hardware.product" contains_outof="CPx J650GT;LS ;D810">
+          <merge key="power_management.quirk.none" type="bool">true</merge>
+        </match>
+      </match>
+
+      <!-- Dell Inspiron -->
+      <match key="system.hardware.product" prefix="Inspiron">
+        <match key="system.hardware.product" contains_outof="1501;8600">
+          <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+          <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains="9300">
+          <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains=" 510m ">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains=" 5100 ">
+	  <match key="system.firmware.version" string="Revision A0">
+            <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+            <merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+            <merge key="power_management.quirk.pci_save" type="bool">true</merge>
+          </match>
+	  <match key="system.firmware.version" contains_not="Revision A0">
+            <merge key="power_management.quirk.no_fb" type="bool">true</merge>
+          </match>
+        </match>
+        <match key="system.hardware.product" contains_outof="5150;8000;8500">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+          <merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains_outof="500m;600m;1100;1420;1525;2200;5160">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+          <merge key="power_management.quirk.vbemode_restore" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains="700m">
+        <!-- ONLY needed with i810 X.org driver 1.x versions,
+             DO NOT use with intel X.org driver 2.x version (not needed and causes problems)
+	     <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+	     <merge key="power_management.quirk.vbemode_restore" type="bool">true</merge>
+	     <merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+	     <merge key="power_management.quirk.vga_mode3" type="bool">true</merge> -->
+             <merge key="power_management.quirk.none" type="bool">true</merge>
+        </match>
+        <!-- these need no quirks -->
+        <match key="system.hardware.product" contains_outof=" 1011; 1150; 1520; 1720">
+          <merge key="power_management.quirk.none" type="bool">true</merge>
+        </match>
+      </match>
+
+      <!-- Dell Precision -->
+      <match key="system.hardware.product" prefix="Precision">
+        <match key="system.hardware.product" contains="M20">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+          <merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains="M6300 ">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+          <merge key="power_management.quirk.vbemode_restore" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains=" M60">
+          <merge key="power_management.quirk.vbestate_restore" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains="M65">
+          <merge key="power_management.quirk.dpms_on" type="bool">true</merge>
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+        </match>
+        <!-- these need no quirks -->
+        <match key="system.hardware.product" contains_outof=" M90 ;WorkStation 360; M4300">
+          <merge key="power_management.quirk.none" type="bool">true</merge>
+        </match>
+      </match>
+	
+      <!-- Dell Dimension -->
+      <match key="system.hardware.product" prefix="Dimension">
+        <match key="system.hardware.product" contains_outof="2400;3000;9100">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+          <merge key="power_management.quirk.vbemode_restore" type="bool">true</merge>
+        </match>
+      </match>
+
+      <!-- Dell Vostro -->
+      <match key="system.hardware.product" prefix="Vostro">
+        <match key="system.hardware.product" contains=" 1000 ">
+          <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+          <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains=" 1500">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+          <merge key="power_management.quirk.vbemode_restore" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains="1710">
+          <merge key="power_management.quirk.none" type="bool">true</merge>
+        </match>
+      </match>
+
+      <!-- Dell OptiPlex -->
+      <match key="system.hardware.product" prefix_ncase="OptiPlex">
+        <match key="system.hardware.product" contains_outof="GX520;GX260">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+          <merge key="power_management.quirk.vbemode_restore" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains="755">
+          <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+          <merge key="power_management.quirk.no_fb" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains_ncase="fx160">
+          <merge key="power_management.quirk.s3_bios" type="bool">true</merge>
+          <merge key="power_management.quirk.s3_mode" type="bool">true</merge>
+        </match>
+        <match key="system.hardware.product" contains_outof="170L;GX620">
+          <merge key="power_management.quirk.none" type="bool">true</merge>
+        </match>
+      </match>
+
+      <!-- Dell Inspiron 640m, XPS M1210 -->
+      <match key="system.hardware.product" contains_outof="MXC061;MXC062">
+        <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+      </match>
+      <!-- Dell XPS M1330, MM061 = Inspiron E1505 or/and 6400 -->
+      <match key="system.hardware.product" contains_outof="XPS M1330;MM061">
+        <merge key="power_management.quirk.vbe_post" type="bool">true</merge>
+        <merge key="power_management.quirk.vbemode_restore" type="bool">true</merge>
+      </match>
+
+      <!-- these need no quirks : Dimension E520, DXP051, Inspiron: 1300, E1702/E1705, 630m, M1710 (only resumes with vesafb) -->
+      <match key="system.hardware.product" contains_outof="DM061 ;DXP051;ME051;MP061;MXC051;MXG061;XPS M1530">
+        <merge key="power_management.quirk.none" type="bool">true</merge>
+      </match>
+
+    </match>
+  </device>
+</deviceinfo>

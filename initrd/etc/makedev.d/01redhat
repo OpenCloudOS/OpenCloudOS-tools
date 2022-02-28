@@ -1,0 +1,97 @@
+# Symlinks that aren't required, but expected by other Red Hat packages,
+# and various other things.
+l fb fb0
+l isdnctrl isdnctrl0
+l nftape nrft0
+l ram ram1
+l sga sg0
+l sgb sg1
+l sgc sg2
+l sgd sg3
+l sge sg4
+l sgf sg5
+l sgg sg6
+l sgh sg7
+l sgi sg8
+l sgj sg9
+l sgk sg10
+l sgl sg11
+l sgm sg12
+l sgn sg13
+l sgo sg14
+l sgp sg15
+l vbi vbi0
+l winradio winradio0
+
+l ttyUB0 rfcomm0
+l ttyUB1 rfcomm1
+l cuub0 curf0
+l cuub1 curf1
+
+# More well-known floppy device names.
+b $FLOPPY                2  12  1   4 fd%dD360  
+b $FLOPPY                2  16  1   4 fd%dD720  
+b $FLOPPY                2  28  1   4 fd%dH1440  
+b $FLOPPY                2  12  1   4 fd%dH360  
+b $FLOPPY                2  16  1   4 fd%dH720  
+
+# Not sure where this came from.
+c $ROOT                  6   0  1   4 par%d
+
+# Alternative names for mouse devices.  Should these be symlinks?
+c $CONSOLE              10   0  1   1 logimouse
+c $CONSOLE              10   1  1   1 psmouse
+c $CONSOLE              10   2  1   1 msmouse
+c $CONSOLE              10   3  1   1 atimouse
+c $CONSOLE              10   4  1   1 jmouse
+
+# Tape device names that should probably be symlinks, too.
+c $STORAGE              12   6  1   1 rmt8
+c $STORAGE              12   8  1   1 rmt16
+
+# More tape stuff.
+c $STORAGE              12 136  1   1 tape-d
+c $STORAGE              12 255  1   1 tape-reset
+
+# CD-ROM devices.
+b $STORAGE              15   0  1   1 cdu31a
+b $STORAGE              20   0  1   1 mcdx
+
+# Tape stuff.
+c $STORAGE              27   0  1   4 rft%d
+c $STORAGE              27   4  1   4 nrft%d
+c $STORAGE              27  16  1   4 zrft%d
+c $STORAGE              27  20  1   4 nzrft%d
+c $STORAGE              27  32  1   4 rawrft%d
+c $STORAGE              27  36  1   4 nrawrft%d
+
+# I2C bus devices.
+c $ROOT                 89   0  1   8 i2c%d
+
+# Syslog socket.
+s $ALLWRITE                           log
+
+# IBM pSeries virtual console for LPAR
+c $CONSOLE             229   0  1   1 hvc0
+c $SERIAL              229 128  1  32 hvsi%d
+
+# AIO notification interface
+l vsys aio
+
+# Link for xfs0/nnpfs rename.
+l xfs0 nnpfs0
+
+# Link from VMware's vmnet* to the devices.txt vnet*
+l vmnet0 vnet0
+l vmnet1 vnet1
+l vmnet2 vnet2
+l vmnet3 vnet3
+l vmnet4 vnet4
+l vmnet5 vnet5
+l vmnet6 vnet6
+l vmnet7 vnet7
+l vmnet8 vnet8
+l vmnet9 vnet9
+a vmware vnet
+a vmware vmnet
+a vmware vmmon

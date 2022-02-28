@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ===================================================
-# Copyright (c) [2021] [Tencent]
+# Copyright (c) [2022] [Tencent]
 # [OpenCloudOS Tools] is licensed under Mulan PSL v2.
 # You can use this software according to the terms and conditions of the Mulan PSL v2. 
 # You may obtain a copy of Mulan PSL v2 at:
@@ -28,16 +28,16 @@ rebuildtree()
 { 
 # Remounting the linux directories effectively excludes removable media, manually mounted devices, windows partitions, virtual files under /proc, /sys, /dev, etc. If your partition scheme is more complicated than listed below, you must add lines to rebuildtree() and destroytree(), otherwise the backup will be partial.
     mkdir /$1
-    mount --bind / /$1
-    mount --bind /boot /$1/boot
-    mount --bind /boot/efi /$1/boot/efi
-    mount --bind /home /$1/home
-    #mount --bind /tmp /$1/tmp
-    #mount --bind /usr /$1/usr
-    #mount --bind /var /$1/var
-    #mount --bind /srv /$1/srv
-    #mount --bind /opt /$1/opt
-    mount --bind /usr/local /$1/usr/local
+    mount --make-private --bind / /$1
+    mount --make-private --bind /boot /$1/boot
+    mount --make-private --bind /boot/efi /$1/boot/efi
+    mount --make-private --bind /home /$1/home
+    #mount --make-private --bind /tmp /$1/tmp
+    #mount --make-private --bind /usr /$1/usr
+    #mount --make-private --bind /var /$1/var
+    #mount --make-private --bind /srv /$1/srv
+    #mount --make-private --bind /opt /$1/opt
+    mount --make-private --bind /usr/local /$1/usr/local
 }
 
 destroytree()
@@ -78,7 +78,7 @@ tos_backup()
     fi
 
     bindingdir=`new_dir /tmp/bind`
-    backupdir="/data/tlinux/backup"
+    backupdir="/data/opencloudos/backup"
     bindingdir="${bindingdir#/}"
     backupdir="${backupdir#/}"
     
@@ -101,10 +101,9 @@ tos_backup()
     done
 
     rebuildtree $bindingdir
-    #VER=$(awk '/Tencent/{print $4}' /etc/tlinux-release)
-    VER=$(awk '/Tencent/{print $(NF-1)}' /etc/tlinux-release)
+    VER=$(awk '/OpenCloudOS/{print $(NF)}' /etc/opencloudos-release)
     mkdir -p "/$backupdir"
-    sqfs=tlinux-64bit-v${VER}-backup.`date +"%Y-%m-%d-%H:%M"`.sqfs
+    sqfs=opencloudos-64bit-v${VER}-backup.`date +"%Y-%m-%d-%H:%M"`.sqfs
     mksquashfs /$bindingdir "/$backupdir/${sqfs}" -comp xz -b 262144 -ef $exclude
     destroytree $bindingdir
     rm $exclude
