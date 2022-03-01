@@ -126,7 +126,10 @@ else
 	dd if=/data/$mbr of=/dev/${INSDISK} bs=1M count=1
 fi
 
-umount -l /dev/${INSDISK}{1..4}
+umount -l /dev/${INSDISK}1
+umount -l /dev/${INSDISK}2
+umount -l /dev/${INSDISK}3
+umount -l /dev/${INSDISK}4
 
 partprobe /dev/${INSDISK} 
 check
