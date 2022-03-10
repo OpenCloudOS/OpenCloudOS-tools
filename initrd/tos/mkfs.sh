@@ -115,6 +115,7 @@ else
 	#recovery-mode,and not find format_data=1, don't format data disk
 		grep -q "recovery-mode" /proc/cmdline
 		r_flag=$?
+		DATA_PART="${INSDISK}4"
 		read DATA_PART < "/tmp/datapart.txt"
 		grep -q "format_data=1" /proc/cmdline
 		if [ $? -ne 0 -a $r_flag -eq 0 ]; then
