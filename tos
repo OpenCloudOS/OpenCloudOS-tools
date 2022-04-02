@@ -15,8 +15,8 @@
 # g_CAPD_SRDC_OS@tencent.com
 #
 . /usr/lib/opencloudos-tools/tos-lib.sh
-scriptversion=3.0;
-scriptdate=2022-02-25;
+scriptversion=4.0;
+scriptdate=2022-03-25;
 
 usage="\
 tos version $scriptversion
@@ -29,6 +29,7 @@ Usage:
 	tos -a|-A | analyze		Analyze the system performance 
 	tos set irq			Set irqaffinity, restart irqaffinity service
 	tos -cu| check-update		Check available package updates
+	tos -ch| check-health [ -o OUTPUT_PATH ]	Check system health status
 	tos -b|-B| backup [ reboot ]	Backup the system online, or reboot to backup 
 	tos -r|-R| recover|reinstall	Recover or Reinstall the system
 	tos -h|-H| help			Show this usage
@@ -44,23 +45,31 @@ fi
 while test $# -ne 0; do
     case $1 in
         -u | -U | update) shift
-                          tos_update $@
-                          break;;
+            tos_update $@
+            break;;
         -i | -I | install) shift
-                          tos_install $@
-                          break;;
-        -s | -S | show)  tos_show;;
-        -a | -A | analyze) tos_analyze $2
-		          break;;
-        -b | -B | backup) tos_backup $2
-                          break;;
-        -r | -R | recover | reinstall) shift 
-		          tos_recover $@
-                          break;;
+            tos_install $@
+            break;;
+        -s | -S | show)
+            tos_show;;
+        -a | -A | analyze)
+            tos_analyze $2
+		    break;;
+        -b | -B | backup)
+            tos_backup $2
+            break;;
+        -r | -R | recover | reinstall) shift
+            tos_recover $@
+            break;;
         -c | -C | check) tos_check $2
-                         shift;;
+            shift;;
         -cu | check-update) tos_check_update;;
-        set)  tos_set $2
+        -ch | check-health) shift
+            tos_check_health $@
+            break;;
+        -f | fix) tos_fix $2
+            shift;;
+        set) tos_set $2
             shift;;
         -h | -H | help) echo "$usage"; exit $?;;
         -v | -V | version) echo "$scriptversion";;
