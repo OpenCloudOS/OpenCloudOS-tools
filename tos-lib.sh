@@ -176,6 +176,25 @@ tos_check_update()
 # Recover or Reinstall the system
 tos_recover()
 {
-    /usr/lib/opencloudos-tools/tlinux_super_tool.py -r $@
+    /usr/lib/opencloudos-tools/tencentos_super_tool.py -r $@
 }
 
+# System Health Check
+tos_check_health()
+{
+    health_op=$1
+    health_output_path=$2
+    if [ "$health_op"x == "-o"x ]; then
+        if [ -d "$health_output_path" ]; then
+            /usr/lib/opencloudos-tools/tos-check-health.sh | tee ${health_output_path}/health_check_`date +%Y%m%d_%H%M%S`.txt
+            echo "Your health check report has been saved at ${health_output_path}."
+        else
+            echo "Output path does not exists."
+            mkdir -p /data/opencloudos/health-check
+            /usr/lib/opencloudos-tools/tos-check-health.sh | tee /data/opencloudos/health-check/health_check_`date +%Y%m%d_%H%M%S`.txt
+            echo "Your health check report has been saved at /data/opencloudos/health-check."
+        fi
+    else
+    /usr/lib/opencloudos-tools/tos-check-health.sh
+    fi
+}

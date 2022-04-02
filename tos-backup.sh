@@ -60,7 +60,7 @@ tos_backup()
     if [ -n "$1" ]; then
         back_op=$1
 	if [ "$back_op"x == "reboot"x ];then
-            /usr/lib/opencloudos-tools/tlinux_super_tool.py -b
+            /usr/lib/opencloudos-tools/tencentos_super_tool.py -b
 	else
 	    echo "Please type the correct parameters!"
 	    echo "tos -b : backup the system online"

@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 # ===================================================
@@ -15,9 +15,9 @@
 # Created By  : Songqiao Tao
 # Email       : joeytao@tencent.com
 # Created Date: Fri Mar 24 2017
-# Update Date : Wed Feb 25 2022
+# Update Date : Fri Mar 25 2022
 # Description : Backup and Recover system for OpenCloudOS
-# Version     : 3.0.2
+# Version     : 4.0.1
 # ====================================
 
 import shutil
@@ -32,23 +32,23 @@ import socket
 import glob
 
 def usage():
-    print '''Usage: tos -b | -r [ -f ] [ -p password ] [-s script] -i SQFS_FILE  | -h
+    print('''Usage: tos -b | -r [ -f ] [ -p password ] [-s script] -i SQFS_FILE  | -h
 
     Options:
-    -b                  Backup tlinux system
-    -r                  Recover tlinux system
+    -b                  Backup TencentOS system
+    -r                  Recover TencentOS system
     -i  SQFS_FILE       The path to the sqfs file
     -f                  Format data, e.g. /dev/sda4 in physical machine, /dev/vdb1 in VM, /data in VM without data disk
     -p  PASSWORD        Set the new password
     -s  SCRIPT          An executable file, e.g. a script with shebang to run within the installed new system
     -u  RPM             An rpm file, e.g. kernel-xxx.rpm to update within the installed new system
     -h                  Print this short help text and exit
-'''
+''')
 
 def exit_script(msg=''):
     if msg:
-        print msg
-        print
+        print(msg)
+        print("")
     usage()
     sys.exit(3)
 
@@ -104,6 +104,7 @@ def is_vm():
     vm_desktop_flag = False
     vm_cloud_flag = False
     for line in p.stdout:
+        line = str(line)
         m1 = vm_desktop_pt.search(line)
         m2 = vm_cloud_pt.search(line)
         if m1:
@@ -135,7 +136,7 @@ def get_iface_hwaddr_map():
     tmp_map = {}
     for path in glob.glob("/sys/class/net/eth*"):
         iface = os.path.basename(path)
-        hwaddr = file(os.path.join(path, "address")).read().strip()
+        hwaddr = open(os.path.join(path, "address")).read().strip()
         tmp_map[iface] = hwaddr
     if "eth0" not in tmp_map and "eth1" not in tmp_map:
         exit_script("machine must have eth0 or eth1")
@@ -153,7 +154,7 @@ def copy_files(option, img, sqfs_dir, script, rpm_file):
         if rpm_file:
             shutil.copy(rpm_file, os.path.join(sqfs_dir, "hardinstall_extra.rpm"))
         iface_hwaddr_map = get_iface_hwaddr_map()
-        f = file(os.path.join(sqfs_dir, "hardinstall_iface_hwaddr"), "w")
+        f = open(os.path.join(sqfs_dir, "hardinstall_iface_hwaddr"), "w")
         for key in iface_hwaddr_map:
             f.write("%s=%s\n" % (key, iface_hwaddr_map[key]))
         f.close()
@@ -196,6 +197,7 @@ def get_sshd_ip():
     p = subprocess.Popen(["netstat", "-ntpl"], stdout=subprocess.PIPE)
     netstat_pt = re.compile(r"(\d+\.\d+\.\d+.\d+):.+\/sshd")
     for line in p.stdout:
+        line = str(line)
         m = netstat_pt.search(line)
         if m:
             ssh_ip = m.group(1)
@@ -209,6 +211,7 @@ def check_memory_size_M(size):
     MEM_PT = re.compile(r"Mem:\s+(\d+)")
     p = subprocess.Popen(["free", "-m"], stdout=subprocess.PIPE)
     for line in p.stdout:
+        line = str(line)
         m = MEM_PT.search(line)
         if m:
             p.stdout.close()
@@ -222,8 +225,8 @@ def check_memory_size_M(size):
 def main():
     try:
         opts, args = getopt.getopt(sys.argv[1:], 'brfi:p:s:u:nh', ["help"])
-    except getopt.GetoptError, err:
-        print str(err)
+    except getopt.GetoptError as err:
+        print(str(err))
         usage()
         sys.exit(1)
 
