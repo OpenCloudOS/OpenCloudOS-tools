@@ -10,7 +10,7 @@
 # See the Mulan PSL v2 for more details.  
 # ===================================================
 
-# Live TencentOS Backup, 2020
+# Live OpenCloudOS Backup, 2020
 # Songqiao Tao <joeytao@tencent.com>
 
 new_dir()

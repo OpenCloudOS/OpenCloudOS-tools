@@ -35,8 +35,8 @@ def usage():
     print('''Usage: tos -b | -r [ -f ] [ -p password ] [-s script] -i SQFS_FILE  | -h
 
     Options:
-    -b                  Backup TencentOS system
-    -r                  Recover TencentOS system
+    -b                  Backup OpenCloudOS system
+    -r                  Recover OpenCloudOS system
     -i  SQFS_FILE       The path to the sqfs file
     -f                  Format data, e.g. /dev/sda4 in physical machine, /dev/vdb1 in VM, /data in VM without data disk
     -p  PASSWORD        Set the new password
