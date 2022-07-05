@@ -1,8 +1,0 @@
-127.0.0.1   TENCENT64 TENCENT64.site localhost localhost.localdomain localhost4 localhost4.localdomain4
-::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
-#
-# You can set dns to resolve following domain name
-# for DNS, see http://km.oa.com/group/gslb/article_view/60750
-# tlinux team <t_os@tencent.com>
-#
-192.168.0.115	tlinux-mirrorlist.tencent-cloud.com tlinux-mirror.tencent-cloud.com

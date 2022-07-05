@@ -1,2 +1,0 @@
-http://192.168.0.115/centos/1.2/tlinux/x86_64/
-ftp://192.168.0.115/centos/1.2/tlinux/x86_64/

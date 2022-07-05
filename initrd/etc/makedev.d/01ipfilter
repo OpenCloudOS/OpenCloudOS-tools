@@ -1,5 +1,0 @@
-# Aliases for firewalling.
-a ipfilter ipauth
-a ipfilter ipl
-a ipfilter ipnat
-a ipfilter ipstate
